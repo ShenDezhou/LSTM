@@ -1,0 +1,5 @@
+sklearn_crfsuite
+scikit-learn
+elasticsearch==6
+tensorflow==1.15.2
+Keras==2.2.4
