@@ -12,14 +12,14 @@ from keras.preprocessing.sequence import pad_sequences
 
 #               precision    recall  f1-score   support
 #
-#            B     0.3810    0.3958    0.3883     56882
-#            M     0.0000    0.0000    0.0000     11479
-#            E     0.3987    0.3649    0.3811     56882
-#            S     0.3908    0.5067    0.4412     47490
+#            B     0.9364    0.9423    0.9393     56882
+#            M     0.7099    0.7914    0.7484     11479
+#            E     0.9344    0.9363    0.9354     56882
+#            S     0.9362    0.9010    0.9183     47490
 #
-#    micro avg     0.3898    0.3898    0.3898    172733
-#    macro avg     0.2926    0.3169    0.3026    172733
-# weighted avg     0.3642    0.3898    0.3747    172733
+#     accuracy                         0.9189    172733
+#    macro avg     0.8792    0.8927    0.8854    172733
+# weighted avg     0.9207    0.9189    0.9196    172733
 # {'mean_squared_error': 0.2586491465518497, 'mean_absolute_error': 0.27396197698378544, 'mean_absolute_percentage_error': 0.3323864857505891, 'mean_squared_logarithmic_error': 0.2666326968685906, 'squared_hinge': 0.2827528866772688, 'hinge': 0.27436352076398335, 'categorical_crossentropy': 0.3050300775957548, 'binary_crossentropy': 0.7499999871882543, 'kullback_leibler_divergence': 0.30747676168440974, 'poisson': 0.2897763648871911, 'cosine_proximity': 0.3213321868358391, 'sgd': 0.27380688950156684, 'rmsprop': 0.4363407859974404, 'adagrad': 0.5028908227192664, 'adadelta': 0.3134481079882679, 'adam': 0.342444794579377, 'adamax': 0.36860069757644914, 'nadam': 0.39635284171196516}
 
 dicts = []
@@ -129,6 +129,7 @@ loss = "squared_hinge"
 optimizer = "nadam"
 sequence = Input(shape=(maxlen,))
 embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(sequence)
+
 dropout = SpatialDropout1D(rate=Dropoutrate)(embedded)
 # blstm = Bidirectional(LSTM(Hidden, dropout=Dropoutrate, recurrent_dropout=Dropoutrate, return_sequences=True), merge_mode='sum')(dropout)
 blstm = Bidirectional(CuDNNLSTM(Hidden, return_sequences=True), merge_mode='sum')(dropout)
@@ -139,7 +140,7 @@ model = Model(input=sequence, output=dense)
 # model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
 # optimizer = Adagrad(lr=learningrate)
 model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
-#model.save("keras/lstm.h5")
+#model.save("keras/lstm1.h5")
 
 model.summary()
 

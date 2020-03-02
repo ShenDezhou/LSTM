@@ -198,13 +198,15 @@ if MODE == 2:
             counter = 0
             for line in xlines:
                 line = line.replace(" ", "").strip()
+                line = '\n' * (maxlen - len(line)) + line
                 # X.append([getFeaturesDict(line, i) for i in range(len(line))])
                 X.append([rxdict.get(e, 0) for e in list(line)])
                 counter += 1
                 if counter % 1000 == 0 and counter != 0:
                     print('.')
             print(len(X))
-            X = pad_sequences(X, maxlen=maxlen, padding='pre', value=0)
+            X = numpy.array(X)
+            # X = pad_sequences(X, maxlen=maxlen, padding='pre', value=0)
             print(len(X), X.shape)
             yp = model.predict(X)
             print(yp.shape)
