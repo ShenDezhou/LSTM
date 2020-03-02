@@ -6,7 +6,7 @@ import pickle
 
 import numpy
 from keras import regularizers
-from keras.layers import Dense, Embedding,Reshape, Flatten, LSTM, Dropout, Input, Bidirectional
+from keras.layers import Dense, Embedding, SpatialDropout1D, LSTM, Input, Bidirectional, Flatten,CuDNNLSTM
 from keras.models import Model
 from keras.models import load_model
 from sklearn_crfsuite import metrics
@@ -152,6 +152,23 @@ def getNgram(sentence, i):
         ngrams.append(safea(sentence, i + offset) + safea(sentence, i + offset + 1) + safea(sentence, i + offset + 2))
     return ngrams
 
+def getBigram(sentence, i):
+    #5 + 4*2 + 2*3=19
+    ngrams = []
+    for offset in [0, 1, 2]:
+        ngrams.append(safea(sentence, i + offset))
+    return ngrams
+
+
+def getBigramVector(sentence, i):
+    ngrams = getBigram(sentence, i)
+    ngramv = []
+    for ngram in ngrams:
+        for ch in ngram:
+            ngramv.append(rxdict.get(ch,0))
+    return ngramv
+
+
 def getNgramVector(sentence, i):
     ngrams = getNgram(sentence, i)
     ngramv = []
@@ -189,10 +206,10 @@ def getTypeVector(sentence, i):
 
 def getFeatures(sentence, i):
     features = []
-    features.extend(getNgramVector(sentence, i))
-    features.extend(getReduplicationVector(sentence, i))
-    features.extend(getTypeVector(sentence, i))
-    assert len(features) == 24, (len(features),features)
+    features.extend(getBigramVector(sentence, i))
+    # features.extend(getReduplicationVector(sentence, i))
+    # features.extend(getTypeVector(sentence, i))
+    assert len(features) == 3, (len(features),features)
     return features
 
 
@@ -207,7 +224,7 @@ def getFeaturesDict(sentence, i):
 
 batch_size = 64
 maxlen = 1019
-nFeatures = 24
+nFeatures = 3
 word_size = 100
 Hidden = 150
 Regularization = 1e-4
@@ -219,13 +236,13 @@ EPOCHS = 1
 
 
 
-MODE = 1
+MODE = 3
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('plain/pku_train_states.txt', 'r', encoding='utf8') as fs:
-            with codecs.open('model/lstm/pku_train_crffeatures.pkl', 'wb') as fx:
-                with codecs.open('model/lstm/pku_train_crfstates.pkl', 'wb') as fy:
+            with codecs.open('model/pku_train_crffeatures.pkl', 'wb') as fx:
+                with codecs.open('model/pku_train_crfstates.pkl', 'wb') as fy:
                     xlines = ft.readlines()
                     ylines = fs.readlines()
                     X = []
@@ -275,27 +292,42 @@ if MODE == 1:
                     fy.write(sy)
 
 if MODE==2:
-    loss = "cosine_proximity"
-    optimizer = "rmsprop"
-    sequence = Input(shape=(maxlen, nFeatures,))
-    dropout = Dropout(rate=Dropoutrate)(sequence)
-    # embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen*nFeatures, mask_zero=True, dropout=Dropoutrate)(flattern)
-    blstm = Bidirectional(LSTM(Hidden, batch_input_shape=(maxlen, nFeatures), return_sequences=True), merge_mode='sum')(
-        dropout)
+    # loss = "cosine_proximity"
+    # optimizer = "rmsprop"
+    # sequence = Input(shape=(maxlen, nFeatures,))
+    # dropout = Dropout(rate=Dropoutrate)(sequence)
+    # # embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen*nFeatures, mask_zero=True, dropout=Dropoutrate)(flattern)
+    # blstm = Bidirectional(LSTM(Hidden, batch_input_shape=(maxlen, nFeatures), return_sequences=True), merge_mode='sum')(
+    #     dropout)
+    # # lstm = LSTM(Hidden, return_sequences=True)(embedded)
+    # dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(blstm)
+    # model = Model(input=sequence, output=dense)
+    # # model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
+    # # optimizer = Adagrad(lr=learningrate)
+    # model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
+    # # model.save("keras/lstm.h5")
+    #
+    # model.summary()
+
+    loss = "squared_hinge"
+    optimizer = "nadam"
+    sequence = Input(shape=(maxlen,nFeatures,))
+    # flattern = Flatten()(sequence)
+    # embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen*nFeatures, mask_zero=True)(sequence)
+    # dropout = SpatialDropout1D(rate=Dropoutrate)(embedded)
+    blstm = Bidirectional(CuDNNLSTM(Hidden,  batch_input_shape=(maxlen, nFeatures), dropout=Dropoutrate, recurrent_dropout=Dropoutrate, return_sequences=True),
+                          merge_mode='sum')(sequence)
     # lstm = LSTM(Hidden, return_sequences=True)(embedded)
     dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(blstm)
     model = Model(input=sequence, output=dense)
     # model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
     # optimizer = Adagrad(lr=learningrate)
     model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
-    # model.save("keras/lstm.h5")
-
-    model.summary()
 
 
-    with codecs.open('model/lstm/pku_train_crffeatures.pkl', 'rb') as fx:
-        with codecs.open('model/lstm/pku_train_crfstates.pkl', 'rb') as fy:
-            with codecs.open('model/lstm/pku_train_crfmodel.pkl', 'wb') as fm:
+    with codecs.open('model/pku_train_crffeatures.pkl', 'rb') as fx:
+        with codecs.open('model/pku_train_crfstates.pkl', 'rb') as fy:
+            with codecs.open('model/pku_train_lstmmodel.pkl', 'wb') as fm:
                 bx = fx.read()
                 by = fy.read()
                 X = pickle.loads(bx)
@@ -312,20 +344,20 @@ if MODE==2:
                 sm = pickle.dumps(model)
                 fm.write(sm)
 
-                yp = model.predict(X)
-                print(yp)
-                m = metrics.flat_classification_report(
-                    y, yp, labels=list("BMES"), digits=4
-                )
-                print(m)
-                model.save("model/lstm/lstm.h5")
+                # yp = model.predict(X)
+                # print(yp)
+                # m = metrics.flat_classification_report(
+                #     y, yp, labels=list("BMES"), digits=4
+                # )
+                # print(m)
+                model.save("keras/lstm.h5")
                 print('FIN')
 
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('baseline/pku_test_lstm_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("model/lstm/lstm.h5")
+            model = load_model("keras/lstm.h5")
             model.summary()
 
             xlines = ft.readlines()

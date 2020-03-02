@@ -5,7 +5,7 @@ import string
 
 import numpy
 from keras import regularizers
-from keras.layers import Dense, Embedding, LSTM, SpatialDropout1D, Input, Bidirectional
+from keras.layers import Dense, Embedding, LSTM,CuDNNLSTM, SpatialDropout1D, Input, Bidirectional,Dropout, BatchNormalization
 from keras.models import Model
 from keras.models import load_model
 from keras.preprocessing.sequence import pad_sequences
@@ -123,16 +123,18 @@ Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 1
+EPOCHS = 100
 
 loss = "squared_hinge"
 optimizer = "nadam"
 sequence = Input(shape=(maxlen,))
-embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=True)(sequence)
+embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(sequence)
 dropout = SpatialDropout1D(rate=Dropoutrate)(embedded)
-blstm = Bidirectional(LSTM(Hidden, dropout=Dropoutrate, recurrent_dropout=Dropoutrate, return_sequences=True), merge_mode='sum')(dropout)
-# lstm = LSTM(Hidden, return_sequences=True)(embedded)
-dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(blstm)
+# blstm = Bidirectional(LSTM(Hidden, dropout=Dropoutrate, recurrent_dropout=Dropoutrate, return_sequences=True), merge_mode='sum')(dropout)
+blstm = Bidirectional(CuDNNLSTM(Hidden, return_sequences=True), merge_mode='sum')(dropout)
+dropout = Dropout(0.2)(blstm)
+batchNorm = BatchNormalization()(dropout)
+dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
 model = Model(input=sequence, output=dense)
 # model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
 # optimizer = Adagrad(lr=learningrate)
@@ -141,7 +143,7 @@ model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
 
 model.summary()
 
-MODE = 2
+MODE = 1
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:

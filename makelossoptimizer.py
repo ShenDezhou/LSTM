@@ -5,7 +5,7 @@ import string
 
 import numpy
 from keras import regularizers
-from keras.layers import Dense, Embedding, LSTM, Dropout, Input, Bidirectional
+from keras.layers import Dense, Embedding, LSTM, Dropout, Input, Bidirectional,SpatialDropout1D,CuDNNLSTM,BatchNormalization
 from keras.models import Model
 from keras.models import load_model
 from keras.preprocessing.sequence import pad_sequences
@@ -134,17 +134,17 @@ def getFeaturesDict(sentence, i):
     return features
 
 
-batch_size = 1024
+batch_size = 64
 maxlen = 1019
 nFeatures = 1
 word_size = 100
-Hidden = 50
+Hidden = 150
 Regularization = 1e-4
 Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 1
+EPOCHS = 30
 
 modeldic = {}
 scoredic = {}
@@ -154,32 +154,33 @@ for loss in ["mean_squared_error", "mean_absolute_error", "mean_absolute_percent
              "mean_squared_logarithmic_error", "squared_hinge", "hinge", "categorical_crossentropy",
              "sparse_categorical_crossentropy", "binary_crossentropy", "kullback_leibler_divergence", "poisson",
              "cosine_proximity"]:
+    optimizer = "nadam"
     sequence = Input(shape=(maxlen,))
-    dropout = Dropout(rate=Dropoutrate)(sequence)
-    embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=True)(dropout)
-    blstm = Bidirectional(LSTM(Hidden, return_sequences=True), merge_mode='sum')(embedded)
-    # lstm = LSTM(Hidden, return_sequences=True)(embedded)
-    dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(blstm)
+    embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(sequence)
+    dropout = SpatialDropout1D(rate=Dropoutrate)(embedded)
+    # blstm = Bidirectional(LSTM(Hidden, dropout=Dropoutrate, recurrent_dropout=Dropoutrate, return_sequences=True), merge_mode='sum')(dropout)
+    blstm = Bidirectional(CuDNNLSTM(Hidden, return_sequences=True), merge_mode='sum')(dropout)
+    dropout = Dropout(0.2)(blstm)
+    batchNorm = BatchNormalization()(dropout)
+    dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
     model = Model(input=sequence, output=dense)
-    # model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
-    # adagrad = Adagrad(lr=learningrate)
-    model.compile(loss=loss, optimizer='sgd', metrics=["accuracy"])
+    model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
     modeldic[loss] = model
     counter += 1
     model.summary()
 
 for optimizer in ['sgd', 'rmsprop', 'adagrad', 'adadelta', 'adam', 'adamax', 'nadam']:
+    loss = "squared_hinge"
     sequence = Input(shape=(maxlen,))
-    dropout = Dropout(rate=Dropoutrate)(sequence)
-    embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=True)(dropout)
-    blstm = Bidirectional(LSTM(Hidden, return_sequences=True), merge_mode='sum')(embedded)
-    # lstm = LSTM(Hidden, return_sequences=True)(embedded)
-    dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(blstm)
+    embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(sequence)
+    dropout = SpatialDropout1D(rate=Dropoutrate)(embedded)
+    # blstm = Bidirectional(LSTM(Hidden, dropout=Dropoutrate, recurrent_dropout=Dropoutrate, return_sequences=True), merge_mode='sum')(dropout)
+    blstm = Bidirectional(CuDNNLSTM(Hidden, return_sequences=True), merge_mode='sum')(dropout)
+    dropout = Dropout(0.2)(blstm)
+    batchNorm = BatchNormalization()(dropout)
+    dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
     model = Model(input=sequence, output=dense)
-    # model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
-    # adagrad = Adagrad(lr=learningrate)
-    model.compile(loss='mean_squared_error', optimizer=optimizer, metrics=["accuracy"])
-    # model.save(r"H:\私人文件\008代码及系统\021字典和Viterbi中文分词\elasticsearch-analysis-hanlp\src\main\resources\lstm%d.h5"%counter)
+    model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
     modeldic[optimizer] = model
     counter += 1
     model.summary()
@@ -198,26 +199,31 @@ if MODE == 1:
             counter = 0
             for line in xlines:
                 line = line.replace(" ", "").strip()
+                line = '\n' * (maxlen - len(line)) + line
                 # X.append([getFeaturesDict(line, i) for i in range(len(line))])
                 X.append([rxdict.get(e, 0) for e in list(line)])
                 counter += 1
                 if counter % 10000 == 0 and counter != 0:
                     print('.')
             print(len(X))
-            X = pad_sequences(X, maxlen=maxlen, padding='pre', value=0)
+            X = numpy.array(X)
+            # X = pad_sequences(X, maxlen=maxlen, padding='pre', value=0)
             print(len(X), X.shape)
 
             print('process y list.')
             for line in ylines:
                 line = line.strip()
+                line = 'S' * (maxlen - len(line)) + line
                 line = [rydict[s] for s in line]
                 sline = numpy.zeros((len(line), len("BMES")), dtype=int)
                 for g in range(len(line)):
                     sline[g, line[g]] = 1
                 y.append(sline)
             print(len(y))
-            y = pad_sequences(y, maxlen=maxlen, padding='pre', value=3)
+            y = numpy.array(y)
+            # y = pad_sequences(y, maxlen=maxlen, padding='pre', value=3)
             print(len(y), y.shape)
+
             for key, model in modeldic.items():
                 try:
                     history = model.fit(X, y, batch_size=batch_size, nb_epoch=EPOCHS, verbose=1)
@@ -234,33 +240,35 @@ if MODE == 1:
 if MODE == 2:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_lstm_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/lstm1.h5")
-            model.summary()
-
             xlines = ft.readlines()
             X = []
             print('process X list.')
             counter = 0
             for line in xlines:
                 line = line.replace(" ", "").strip()
+                line = '\n' * (maxlen - len(line)) + line
                 # X.append([getFeaturesDict(line, i) for i in range(len(line))])
                 X.append([rxdict.get(e, 0) for e in list(line)])
                 counter += 1
                 if counter % 1000 == 0 and counter != 0:
                     print('.')
             print(len(X))
-            X = pad_sequences(X, maxlen=maxlen, padding='pre', value=0)
+            X = numpy.array(X)
+            # X = pad_sequences(X, maxlen=maxlen, padding='pre', value=0)
             print(len(X), X.shape)
-            yp = model.predict(X)
-            print(yp.shape)
-            for i in range(yp.shape[0]):
-                sl = yp[i]
-                lens = len(xlines[i].strip())
-                for s in sl[-lens:]:
-                    i = numpy.argmax(s)
-                    fl.write(STATES[i])
-                fl.write('\n')
+            for key, model in modeldic.items():
+                model = load_model("keras/lstm-%s.h5" % key)
+                model.summary()
+                with codecs.open('baseline/pku_test_lstm-%s_states.txt'%key, 'w', encoding='utf8') as fl:
+                    yp = model.predict(X)
+                    print(yp.shape)
+                    for i in range(yp.shape[0]):
+                        sl = yp[i]
+                        lens = len(xlines[i].strip())
+                        for s in sl[-lens:]:
+                            i = numpy.argmax(s)
+                            fl.write(STATES[i])
+                        fl.write('\n')
             print('FIN')
             # for sl in yp:
             #     for s in sl:
