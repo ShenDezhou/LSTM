@@ -1,4 +1,4 @@
-# pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+#lstm baseline
 import codecs
 import re
 import string
@@ -113,7 +113,7 @@ def getFeaturesDict(sentence, i):
     return features
 
 
-batch_size = 64
+batch_size = 256
 maxlen = 1019
 nFeatures = 1
 word_size = 100
@@ -123,7 +123,7 @@ Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 1
+EPOCHS = 30
 
 loss = "squared_hinge"
 optimizer = "nadam"
@@ -141,7 +141,7 @@ model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
 
 model.summary()
 
-MODE = 2
+MODE = 1
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
@@ -182,14 +182,14 @@ if MODE == 1:
 
             history = model.fit(X, y, batch_size=batch_size, nb_epoch=EPOCHS, verbose=1)
 
-            model.save("keras/lstm.h5")
+            model.save("keras/lstm-baseline.h5")
             print('FIN')
 
 if MODE == 2:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('baseline/pku_test_lstm_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/lstm.h5")
+            model = load_model("keras/lstm-baseline.h5")
             model.summary()
 
             xlines = ft.readlines()

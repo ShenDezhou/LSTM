@@ -1,4 +1,5 @@
-# pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# spatialdropout, dropout and batchnormalization makes it SOTA.
+# lstm-dnn-baseline
 import codecs
 import re
 import string
@@ -113,7 +114,7 @@ def getFeaturesDict(sentence, i):
     return features
 
 
-batch_size = 64
+batch_size = 256
 maxlen = 1019
 nFeatures = 1
 word_size = 100
@@ -133,7 +134,7 @@ embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=F
 dropout = SpatialDropout1D(rate=Dropoutrate)(embedded)
 # blstm = Bidirectional(LSTM(Hidden, dropout=Dropoutrate, recurrent_dropout=Dropoutrate, return_sequences=True), merge_mode='sum')(dropout)
 blstm = Bidirectional(CuDNNLSTM(Hidden, return_sequences=True), merge_mode='sum')(dropout)
-dropout = Dropout(0.2)(blstm)
+dropout = Dropout(Dropoutrate)(blstm)
 batchNorm = BatchNormalization()(dropout)
 dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
 model = Model(input=sequence, output=dense)
@@ -185,14 +186,14 @@ if MODE == 1:
 
             history = model.fit(X, y, batch_size=batch_size, nb_epoch=EPOCHS, verbose=1)
 
-            model.save("keras/lstm.h5")
+            model.save("keras/lstm-dnn-baseline.h5")
             print('FIN')
 
 if MODE == 2:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('baseline/pku_test_lstm_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/lstm.h5")
+            model = load_model("keras/lstm-dnn-baseline.h5")
             model.summary()
 
             xlines = ft.readlines()

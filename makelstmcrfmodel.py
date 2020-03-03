@@ -6,13 +6,27 @@ import pickle
 
 import numpy
 from keras import regularizers
-from keras.layers import Dense, Embedding, SpatialDropout1D, LSTM, Input, Bidirectional, Flatten,CuDNNLSTM, Lambda, Dropout, BatchNormalization, Average
-from keras.keras_contrib.layers import *
+from keras.layers import Dense, Embedding, Add, SpatialDropout1D, LSTM, Input, Bidirectional, Flatten,CuDNNLSTM, Lambda, Dropout, BatchNormalization, Average, concatenate
 from keras.models import Model
 from keras.models import load_model
+from keras.optimizers import Adagrad
 from sklearn_crfsuite import metrics
 from keras.preprocessing.sequence import pad_sequences
 import keras.backend as K
+from keras_contrib.layers import CRF
+from keras_contrib.losses import crf_loss
+from keras_contrib.metrics import crf_accuracy
+
+#               precision    recall  f1-score   support
+#
+#            B     0.9263    0.9122    0.9192     56882
+#            M     0.7086    0.7588    0.7328     11479
+#            E     0.9341    0.9193    0.9266     56882
+#            S     0.8883    0.9061    0.8971     47490
+#
+#    micro avg     0.9027    0.9027    0.9027    172733
+#    macro avg     0.8643    0.8741    0.8689    172733
+# weighted avg     0.9040    0.9027    0.9032    172733
 
 dicts = []
 unidicts = []
@@ -223,7 +237,7 @@ def getFeaturesDict(sentence, i):
     featuresdic = dict([(str(j), features[j]) for j in range(len(features))])
     return featuresdic
 
-batch_size = 64
+batch_size = 1
 maxlen = 1019
 nFeatures = 3
 word_size = 100
@@ -233,7 +247,7 @@ Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 10
+EPOCHS = 50
 
 
 
@@ -293,26 +307,33 @@ if MODE == 1:
                     fy.write(sy)
 
 if MODE==2:
-    loss = "mean_squared_error"
-    optimizer = "nadam"
+    loss = crf_loss
+    optimizer = "nadam" #Adagrad(lr=0.2) # "adagrad"
+    metric= crf_accuracy
     sequence = Input(shape=(maxlen,nFeatures,))
     seqsa, seqsb, seqsc = Lambda(lambda x: [x[:,:,0],x[:,:,1],x[:,:,2]])(sequence)
     embeddeda = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(seqsa)
-    dropouta = SpatialDropout1D(rate=Dropoutrate)(embeddeda)
+    # dropouta = SpatialDropout1D(rate=Dropoutrate)(embeddeda)
     embeddedb = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(seqsb)
-    dropoutb = SpatialDropout1D(rate=Dropoutrate)(embeddedb)
+    # dropoutb = SpatialDropout1D(rate=Dropoutrate)(embeddedb)
     embeddedc = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(seqsc)
-    dropoutc = SpatialDropout1D(rate=Dropoutrate)(embeddedc)
-    average = Average()([dropouta, dropoutb,dropoutc])
+    # dropoutc = SpatialDropout1D(rate=Dropoutrate)(embeddedc)
 
-    blstm = Bidirectional(CuDNNLSTM(Hidden, return_sequences=True), merge_mode='sum')(average)
-    dropout = SpatialDropout1D(rate=Dropoutrate)(blstm)
+    averagea = Average()([embeddeda, embeddedb])
+    averageb = Average()([embeddedc, embeddedb])
+
+    concat = Add()([embeddeda, averagea,averageb])
+
+    blstm = Bidirectional(CuDNNLSTM(Hidden,batch_input_shape=(maxlen,nFeatures), return_sequences=True), merge_mode='sum')(concat)
+    dropout = Dropout(rate=Dropoutrate)(blstm)
     batchNorm = BatchNormalization()(dropout)
     dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
-    model = Model(input=sequence, output=dense)
+    crf = CRF(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(dense)
+
+    model = Model(input=sequence, output=crf)
     # model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
     # optimizer = Adagrad(lr=learningrate)
-    model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
+    model.compile(loss=loss, optimizer=optimizer, metrics=[metric])
     model.summary()
 
     with codecs.open('model/pku_train_crffeatures.pkl', 'rb') as fx:
@@ -347,7 +368,10 @@ if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('baseline/pku_test_lstmwithwindow_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/lstm.h5")
+            custom_objects = {'CRF': CRF,
+                              'crf_loss': crf_loss,
+                              'crf_accuracy': crf_accuracy}
+            model = load_model("keras/lstm.h5",custom_objects=custom_objects)
             model.summary()
 
             xlines = ft.readlines()

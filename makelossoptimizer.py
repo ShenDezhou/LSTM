@@ -1,4 +1,4 @@
-# pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# loss and optimizer chooser. prefer squared_hinge and nadam.
 import codecs
 import re
 import string

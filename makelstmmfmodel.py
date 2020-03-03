@@ -1,4 +1,4 @@
-# pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# lstm-crf
 import codecs
 import re
 import string
@@ -247,7 +247,7 @@ Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 60
+EPOCHS = 50
 
 
 
@@ -307,9 +307,9 @@ if MODE == 1:
                     fy.write(sy)
 
 if MODE==2:
-    loss = crf_loss#"squared_hinge"
-    optimizer = Adagrad(lr=0.2) # "adagrad"
-    metric=crf_accuracy #"accuracy"
+    loss = crf_loss
+    optimizer = "nadam"
+    metric= "accuracy"
     sequence = Input(shape=(maxlen,nFeatures,))
     seqsa, seqsb, seqsc = Lambda(lambda x: [x[:,:,0],x[:,:,1],x[:,:,2]])(sequence)
     embeddeda = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(seqsa)
@@ -361,7 +361,7 @@ if MODE==2:
                 #     y, yp, labels=list("BMES"), digits=4
                 # )
                 # print(m)
-                model.save("keras/lstm.h5")
+                model.save("keras/lstm-crf.h5")
                 print('FIN')
 
 if MODE == 3:
@@ -371,7 +371,7 @@ if MODE == 3:
             custom_objects = {'CRF': CRF,
                               'crf_loss': crf_loss,
                               'crf_accuracy': crf_accuracy}
-            model = load_model("keras/lstm.h5",custom_objects=custom_objects)
+            model = load_model("keras/lstm-crf.h5",custom_objects=custom_objects)
             model.summary()
 
             xlines = ft.readlines()
