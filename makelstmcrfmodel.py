@@ -237,7 +237,7 @@ def getFeaturesDict(sentence, i):
     featuresdic = dict([(str(j), features[j]) for j in range(len(features))])
     return featuresdic
 
-batch_size = 1
+batch_size = 64
 maxlen = 1019
 nFeatures = 3
 word_size = 100
