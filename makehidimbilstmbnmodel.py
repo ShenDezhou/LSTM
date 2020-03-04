@@ -247,11 +247,11 @@ Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 60
+EPOCHS = 30
 
 
 
-MODE = 2
+MODE = 3
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
@@ -316,12 +316,10 @@ if MODE==2:
     embeddedb = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(seqsb)
     embeddedc = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(seqsc)
 
-    averagea = Average()([embeddeda, embeddedb])
-    averageb = Average()([embeddedc, embeddedb])
     maximuma = Maximum()([embeddeda, embeddedb])
     maximumb = Maximum()([embeddedc, embeddedb])
 
-    concat = concatenate([embeddeda, averagea, averageb, maximuma, maximumb])
+    concat = concatenate([embeddeda, maximuma, maximumb])
 
     dropout = SpatialDropout1D(rate=Dropoutrate)(concat)
 

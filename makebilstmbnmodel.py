@@ -125,9 +125,9 @@ learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
 EPOCHS = 30
-
 loss = "squared_hinge"
 optimizer = "nadam"
+
 sequence = Input(shape=(maxlen,))
 embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(sequence)
 
