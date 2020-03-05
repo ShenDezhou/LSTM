@@ -2,7 +2,7 @@ import codecs
 
 from sklearn_crfsuite import metrics
 
-MODE = 16
+MODE = 19
 
 GOLD = '../plain/pku_test_states.txt'
 
@@ -54,6 +54,14 @@ if MODE == 15:
 if MODE== 16:
     TEST = 'pku_test_hidim_bilstm_bn_states.txt'
 
+if MODE== 17:
+    TEST = 'pku_test_pretrained-bilstm-bn_states.txt'
+
+if MODE== 18:
+    TEST = 'pku_test_pretrained_hidim_bilstm_bn_states.txt'
+
+if MODE== 19:
+    TEST = 'pku_test_pretrained-ultradim-dropout-bilstm-bn_states.txt'
 
 with codecs.open(TEST, 'r', encoding='utf8') as fj:
     with codecs.open(GOLD, 'r', encoding='utf8') as fg:

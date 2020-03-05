@@ -21,18 +21,28 @@ embedding_matrix = numpy.zeros((len(chars)+1, int(dims)))
 
 lines = bz_file.readlines()
 counter = 0
+lenstats = {}
 for line in lines:
     line = line.strip()
     word, coefs = line.split(maxsplit=1)
     word = word.decode(encoding="utf-8")
+    lenstats[len(word)] =lenstats.get(len(word), 0) + 1
     if word in chars:
         embedding_matrix[rxdict[word]] = numpy.fromstring(coefs, 'f', sep=' ')
     if counter % 10000 == 0 and counter!=0:
         print(".")
     counter += 1
 
+print(lenstats)
 print(embedding_matrix.shape)
 # 4698
 # 4529
+#print(embedding_matrix[rxdict['。']])
+zeroind = numpy.where(~embedding_matrix.any(axis=1))[0]
+print(zeroind)
 
+embedding_matrix[zeroind] = embedding_matrix[rxdict['。']]
 numpy.save("zhwiki_embedding.npy", embedding_matrix)
+
+zeroind = numpy.where(~embedding_matrix.any(axis=1))[0]
+print(zeroind)
