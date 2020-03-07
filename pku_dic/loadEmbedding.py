@@ -19,6 +19,9 @@ words, dims = bz_file.readline().strip().split(maxsplit=1)
 print(words, dims)
 embedding_matrix = numpy.zeros((len(chars)+1, int(dims)))
 
+#for fast checking existance
+schar = set(chars)
+
 lines = bz_file.readlines()
 counter = 0
 lenstats = {}
@@ -27,7 +30,7 @@ for line in lines:
     word, coefs = line.split(maxsplit=1)
     word = word.decode(encoding="utf-8")
     lenstats[len(word)] =lenstats.get(len(word), 0) + 1
-    if word in chars:
+    if word in schar:
         embedding_matrix[rxdict[word]] = numpy.fromstring(coefs, 'f', sep=' ')
     if counter % 10000 == 0 and counter!=0:
         print(".")
