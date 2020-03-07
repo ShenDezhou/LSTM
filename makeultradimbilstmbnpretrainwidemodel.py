@@ -21,14 +21,14 @@ from keras.backend import repeat_elements
 
 #               precision    recall  f1-score   support
 #
-#            B     0.9630    0.9552    0.9591     56882
-#            M     0.7642    0.8723    0.8147     11479
-#            E     0.9644    0.9549    0.9597     56882
-#            S     0.9467    0.9348    0.9407     47490
+#            B     0.9624    0.9526    0.9575     56882
+#            M     0.7479    0.8509    0.7961     11479
+#            E     0.9579    0.9494    0.9536     56882
+#            S     0.9410    0.9311    0.9360     47490
 #
-#    micro avg     0.9440    0.9440    0.9440    172733
-#    macro avg     0.9096    0.9293    0.9185    172733
-# weighted avg     0.9458    0.9440    0.9446    172733
+#    micro avg     0.9389    0.9389    0.9389    172733
+#    macro avg     0.9023    0.9210    0.9108    172733
+# weighted avg     0.9408    0.9389    0.9396    172733
 
 dicts = []
 unidicts = []
@@ -259,7 +259,7 @@ EPOCHS = 60
 
 
 
-MODE = 2
+MODE = 3
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
@@ -316,23 +316,31 @@ if MODE == 1:
 
 if MODE==2:
     loss = "squared_hinge"
-    optimizer = "nadam" #Adagrad(lr=0.2) # "adagrad"
+    optimizer = "nadam"#Adagrad(lr=0.2) # "adagrad"
     metric= "accuracy"
     sequence = Input(shape=(maxlen,nFeatures,))
     seqsa, seqsb, seqsc = Lambda(lambda x: [x[:,:,0],x[:,:,1],x[:,:,2]])(sequence)
-
-    denseinputs = Lambda(lambda x: repeat_elements(x[:,:,3:7], 20, axis=2))(sequence)
-    densedropout = Dropout(rate=Dropoutrate)(denseinputs)
-
+    denseinputs = Lambda(lambda x: [x[:,:,3],x[:,:,4],x[:,:,5],x[:,:,6],x[:,:,7]])(sequence)
+    assert len(denseinputs) == 5
     zhwiki_emb = numpy.load("pku_dic/zhwiki_embedding.npy")
+
     embeddeda = Embedding(len(chars) + 1, word_size, embeddings_initializer=Constant(zhwiki_emb),input_length=maxlen, mask_zero=False)(seqsa)
     embeddedb = Embedding(len(chars) + 1, word_size, embeddings_initializer=Constant(zhwiki_emb), input_length=maxlen, mask_zero=False)(seqsb)
     embeddedc = Embedding(len(chars) + 1, word_size, embeddings_initializer=Constant(zhwiki_emb), input_length=maxlen, mask_zero=False)(seqsc)
 
+    embeddeds = [Embedding(redup_size, word_size, embeddings_regularizer=regularizers.l2(Regularization),  input_length=maxlen, mask_zero=False)(i) for i in denseinputs[0:2]]
+    embeddedt = [Embedding(type_size, word_size, embeddings_regularizer=regularizers.l2(Regularization), input_length=maxlen, mask_zero=False)(i) for i in denseinputs[2:]]
+
     maximuma = Maximum()([embeddeda, embeddedb])
     maximumb = Maximum()([embeddedc, embeddedb])
 
-    concat = concatenate([embeddeda, maximuma, maximumb, densedropout])
+    sumbigram = concatenate([embeddeda, maximuma, maximumb])
+    # bnBigram = BatchNormalization()(sumbigram)
+    sumduplication = concatenate(embeddeds)
+    # bnType = BatchNormalization()(sumtypes)
+    sumtype = concatenate(embeddedt)
+
+    concat = concatenate([sumbigram, sumduplication, sumtype])
 
     dropout = SpatialDropout1D(rate=Dropoutrate)(concat)
     blstm = Bidirectional(CuDNNLSTM(Hidden, batch_input_shape=(maxlen, nFeatures), return_sequences=True), merge_mode='sum')(dropout)
@@ -378,7 +386,8 @@ if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('baseline/pku_test_pretrained-ultradim-wide-dropout-bilstm-bn_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/pretrained-ultradim-wide-dropout-bilstm-bn.h5")
+            custom_objects = {"repeat_elements":repeat_elements}
+            model = load_model("keras/pretrained-ultradim-wide-dropout-bilstm-bn.h5", custom_objects=custom_objects)
             model.summary()
 
             xlines = ft.readlines()
