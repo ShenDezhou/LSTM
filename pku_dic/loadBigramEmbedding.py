@@ -2,15 +2,15 @@ import codecs
 import bz2
 import numpy
 
+#277325
+#205617
 chars = []
-with codecs.open('pku_bigram_t1.utf8', 'r', encoding='utf8') as f:
+with codecs.open('pku_bigram.utf8', 'r', encoding='utf8') as f:
     lines = f.readlines()
     for line in lines:
-        for w in line:
-            if w == '\n':
-                continue
-            else:
-                chars.append(w)
+        line = line.strip()
+        if len(line) > 0:
+            chars.append(line)
 print(len(chars))
 rxdict = dict(zip(chars, range(1, 1 + len(chars))))
 
@@ -22,7 +22,7 @@ words, dims = bz_file.readline().strip().split(maxsplit=1)
 print(words, dims)
 embedding_matrix = numpy.zeros((len(chars)+1, int(dims)))
 
-chars.append("。")
+#chars.append("。")
 
 lines = bz_file.readlines()
 counter = 0
@@ -44,10 +44,10 @@ print(embedding_matrix.shape)
 # 4529
 #print(embedding_matrix[rxdict['。']])
 zeroind = numpy.where(~embedding_matrix.any(axis=1))[0]
-print(zeroind)
-
-embedding_matrix[zeroind] = embedding_matrix[rxdict['。']]
-numpy.save("../model/zhwiki_biembedding_t1.npy", embedding_matrix)
+print(len(zeroind))
+print(chars[0])
+embedding_matrix[zeroind] = embedding_matrix[rxdict[chars[0]]]
+numpy.save("../model/zhwiki_biembedding.npy", embedding_matrix)
 
 zeroind = numpy.where(~embedding_matrix.any(axis=1))[0]
 print(zeroind)

@@ -102,11 +102,9 @@ bigrams = []
 with codecs.open('pku_dic/pku_bigram.utf8', 'r', encoding='utf8') as f:
     lines = f.readlines()
     for line in lines:
-        for w in line:
-            if w == '\n':
-                continue
-            else:
-                bigrams.append(w)
+        line = line.strip()
+        if len(line) > 0:
+            bigrams.append(line)
 print(len(bigrams))
 
 rxdict = dict(zip(chars, range(1, 1 + len(chars))))
