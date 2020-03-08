@@ -3,7 +3,7 @@ import bz2
 import numpy
 
 chars = []
-with codecs.open('pku_bigram.utf8', 'r', encoding='utf8') as f:
+with codecs.open('pku_bigram_t1.utf8', 'r', encoding='utf8') as f:
     lines = f.readlines()
     for line in lines:
         for w in line:
@@ -47,7 +47,7 @@ zeroind = numpy.where(~embedding_matrix.any(axis=1))[0]
 print(zeroind)
 
 embedding_matrix[zeroind] = embedding_matrix[rxdict['。']]
-numpy.save("../model/zhwiki_biembedding.npy", embedding_matrix)
+numpy.save("../model/zhwiki_biembedding_t1.npy", embedding_matrix)
 
 zeroind = numpy.where(~embedding_matrix.any(axis=1))[0]
 print(zeroind)

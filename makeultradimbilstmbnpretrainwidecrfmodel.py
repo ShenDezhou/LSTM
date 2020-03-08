@@ -14,8 +14,8 @@ from sklearn_crfsuite import metrics
 from keras.preprocessing.sequence import pad_sequences
 import keras.backend as K
 from keras_contrib.layers import CRF
-from keras_contrib.losses import crf_loss
-from keras_contrib.metrics import crf_accuracy
+from keras_contrib.losses import crf_loss, crf_nll
+from keras_contrib.metrics import crf_accuracy, crf_marginal_accuracy
 from keras.initializers import Constant
 from keras.backend import repeat_elements
 
@@ -256,7 +256,7 @@ Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 60
+EPOCHS = 2
 
 
 
@@ -316,9 +316,9 @@ if MODE == 1:
                     fy.write(sy)
 
 if MODE==2:
-    loss = "squared_hinge"
+    loss = crf_loss#"squared_hinge"
     optimizer = "nadam"
-    metric= "accuracy"
+    metric= crf_accuracy#"accuracy"
     sequence = Input(shape=(maxlen,nFeatures,))
     seqsa, seqsb, seqsc = Lambda(lambda x: [x[:,:,0],x[:,:,1],x[:,:,2]])(sequence)
     denseinputs = Lambda(lambda x: [x[:,:,3],x[:,:,4],x[:,:,5],x[:,:,6],x[:,:,7]])(sequence)
@@ -329,8 +329,8 @@ if MODE==2:
     embeddedb = Embedding(len(chars) + 1, word_size, embeddings_initializer=Constant(zhwiki_emb), input_length=maxlen, mask_zero=False)(seqsb)
     embeddedc = Embedding(len(chars) + 1, word_size, embeddings_initializer=Constant(zhwiki_emb), input_length=maxlen, mask_zero=False)(seqsc)
 
-    embeddeds = [Embedding(redup_size, word_size, embeddings_regularizer=regularizers.l2(Regularization),  input_length=maxlen, mask_zero=False)(i) for i in denseinputs[0:2]]
-    embeddedt = [Embedding(type_size, word_size, embeddings_regularizer=regularizers.l2(Regularization), input_length=maxlen, mask_zero=False)(i) for i in denseinputs[2:]]
+    embeddeds = [Embedding(redup_size, word_size, input_length=maxlen, mask_zero=False)(i) for i in denseinputs[0:2]]
+    embeddedt = [Embedding(type_size, word_size, input_length=maxlen, mask_zero=False)(i) for i in denseinputs[2:]]
 
     maximuma = Maximum()([embeddeda, embeddedb])
     maximumb = Maximum()([embeddedc, embeddedb])
@@ -347,10 +347,12 @@ if MODE==2:
     blstm = Bidirectional(CuDNNLSTM(Hidden, batch_input_shape=(maxlen, nFeatures), return_sequences=True), merge_mode='sum')(dropout)
     # dropout = Dropout(rate=Dropoutrate)(blstm)
     batchNorm = BatchNormalization()(blstm)
-    # dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
-    densecrf = CRF(nState, learn_mode='marginal', sparse_target=False, activation="softmax", kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
 
-    model = Model(input=sequence, output=densecrf)
+    dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
+
+    dense = CRF(nState, sparse_target=True)(dense)
+
+    model = Model(input=sequence, output=dense)
     # model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
     # optimizer = Adagrad(lr=learningrate)
     model.compile(loss=loss, optimizer=optimizer, metrics=[metric])
@@ -388,7 +390,7 @@ if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('baseline/pku_test_pretrained-ultradim-wide-dropout-bilstm-bn-crf_states.txt', 'w', encoding='utf8') as fl:
-            custom_objects = {"CRF":CRF}
+            custom_objects = {"CRF":CRF,"crf_loss":crf_loss,"crf_accuracy":crf_accuracy}
             model = load_model("keras/pretrained-ultradim-wide-dropout-bilstm-bn-crf.h5", custom_objects=custom_objects)
             model.summary()
 

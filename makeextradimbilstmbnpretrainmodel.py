@@ -19,16 +19,17 @@ from keras_contrib.metrics import crf_accuracy
 from keras.initializers import Constant
 from keras.backend import repeat_elements
 
+
 #               precision    recall  f1-score   support
 #
-#            B     0.9624    0.9526    0.9575     56882
-#            M     0.7479    0.8509    0.7961     11479
-#            E     0.9579    0.9494    0.9536     56882
-#            S     0.9410    0.9311    0.9360     47490
+#            B     0.9625    0.9587    0.9606     56882
+#            M     0.7965    0.8525    0.8235     11479
+#            E     0.9593    0.9600    0.9596     56882
+#            S     0.9472    0.9347    0.9409     47490
 #
-#    micro avg     0.9389    0.9389    0.9389    172733
-#    macro avg     0.9023    0.9210    0.9108    172733
-# weighted avg     0.9408    0.9389    0.9396    172733
+#    micro avg     0.9455    0.9455    0.9455    172733
+#    macro avg     0.9164    0.9265    0.9212    172733
+# weighted avg     0.9462    0.9455    0.9458    172733
 
 dicts = []
 unidicts = []
@@ -399,6 +400,13 @@ if MODE==2:
     model.compile(loss=loss, optimizer=optimizer, metrics=[metric])
     model.summary()
 
+    model_json = model.to_json()
+    with open("keras/pretrained-extradim-dropout-bilstm-bn-arch.json", "w") as json_file:
+        json_file.write(model_json)
+    model.save_weights("keras/pretrained-extradim-dropout-bilstm-bn-weights.h5")
+    #model.save("keras/pretrained-extradim-dropout-bilstm-bn.h5")
+    print("INI")
+
     with codecs.open('model/extra/pku_train_crffeatures.pkl', 'rb') as fx:
         with codecs.open('model/extra/pku_train_crfstates.pkl', 'rb') as fy:
             with codecs.open('model/extra/pku_train_lstmmodel.pkl', 'wb') as fm:
@@ -424,39 +432,46 @@ if MODE==2:
                 #     y, yp, labels=list("BMES"), digits=4
                 # )
                 # print(m)
-                model.save("keras/pretrained-extradim-dropout-bilstm-bn.h5")
+                model_json = model.to_json()
+                with open("keras/pretrained-extradim-dropout-bilstm-bn-arch.json", "w") as json_file:
+                    json_file.write(model_json)
+                model.save_weights("keras/pretrained-extradim-dropout-bilstm-bn-weights.h5")
+                # model.save("keras/pretrained-extradim-dropout-bilstm-bn.h5")
                 print('FIN')
 
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('baseline/pku_test_pretrained-extradim-wide-dropout-bilstm-bn_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/pretrained-extradim-dropout-bilstm-bn.h5")
-            model.summary()
+            with codecs.open('model/extra/pku_train_lstmmodel.pkl', 'rb') as fm:
+                bm = fm.read()
+                model = pickle.loads(bm)
+                # model = load_model("keras/pretrained-extradim-dropout-bilstm-bn.h5")
+                # model.summary()
 
-            xlines = ft.readlines()
-            X = []
-            print('process X list.')
-            counter = 0
-            for line in xlines:
-                line = line.replace(" ", "").strip()
-                line = '\n' * (maxlen - len(line)) + line
-                X.append([getFeatures(line, i) for i in range(len(line))])
-                # X.append([rxdict.get(e, 0) for e in list(line)])
-                counter += 1
-                if counter % 1000 == 0 and counter != 0:
-                    print('.')
-            X = numpy.array(X)
-            print(len(X), X.shape)
+                xlines = ft.readlines()
+                X = []
+                print('process X list.')
+                counter = 0
+                for line in xlines:
+                    line = line.replace(" ", "").strip()
+                    line = '\n' * (maxlen - len(line)) + line
+                    X.append([getFeatures(line, i) for i in range(len(line))])
+                    # X.append([rxdict.get(e, 0) for e in list(line)])
+                    counter += 1
+                    if counter % 1000 == 0 and counter != 0:
+                        print('.')
+                X = numpy.array(X)
+                print(len(X), X.shape)
 
-            yp = model.predict(X)
-            print(yp.shape)
-            for i in range(yp.shape[0]):
-                sl = yp[i]
-                lens = len(xlines[i].strip())
-                for s in sl[-lens:]:
-                    i = numpy.argmax(s)
-                    fl.write(STATES[i])
-                fl.write('\n')
-            print('FIN')
+                yp = model.predict(X)
+                print(yp.shape)
+                for i in range(yp.shape[0]):
+                    sl = yp[i]
+                    lens = len(xlines[i].strip())
+                    for s in sl[-lens:]:
+                        i = numpy.argmax(s)
+                        fl.write(STATES[i])
+                    fl.write('\n')
+                print('FIN')
 

@@ -72,6 +72,17 @@ if MODE==21:
 if MODE==22:
     TEST='pku_test_pretrained-ultradim-wide-dropout-bilstm-bn-crf_states.txt'
 
+if MODE==23:
+    TEST='pku_test_pretrained-extradim-wide-dropout-bilstm-bn_states.txt'
+
+if MODE==24:
+    TEST='pku_test_pretrained-extradim-wide-dropout-bilstm-bn-l1l2_states.txt'
+
+if MODE==25:
+    TEST='pku_test_pretrained_bigram_bilstm_bn_states.txt'
+
+if MODE==26:
+    TEST='pku_test_pretrained-extradim-wide-dropout-bilstm-bn-t1_states.txt'
 
 with codecs.open(TEST, 'r', encoding='utf8') as fj:
     with codecs.open(GOLD, 'r', encoding='utf8') as fg:
