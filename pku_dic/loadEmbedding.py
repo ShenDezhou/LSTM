@@ -3,6 +3,7 @@ import bz2
 import numpy
 
 chars = []
+init='。'
 with codecs.open('pku_dict.utf8', 'r', encoding='utf8') as f:
     lines = f.readlines()
     for line in lines:
@@ -44,7 +45,7 @@ print(embedding_matrix.shape)
 zeroind = numpy.where(~embedding_matrix.any(axis=1))[0]
 print(zeroind)
 
-embedding_matrix[zeroind] = embedding_matrix[rxdict['。']]
+embedding_matrix[zeroind] = embedding_matrix[rxdict[init]]
 numpy.save("zhwiki_embedding.npy", embedding_matrix)
 
 zeroind = numpy.where(~embedding_matrix.any(axis=1))[0]

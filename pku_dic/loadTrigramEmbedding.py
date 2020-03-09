@@ -2,13 +2,13 @@ import codecs
 import bz2
 import numpy
 from scipy.sparse import csr_matrix, save_npz
-#277325
-#205617
+#217049
+#209714
 
-#71710 bigrams
+#13902 trigrams
 init='。'
 chars = []
-with codecs.open('pku_bigram.utf8', 'r', encoding='utf8') as f:
+with codecs.open('pku_trigram.utf8', 'r', encoding='utf8') as f:
     lines = f.readlines()
     for line in lines:
         line = line.strip()
@@ -24,7 +24,6 @@ bz_file = bz2.BZ2File("../model/zhwiki_20180420_100d.txt.bz2")
 words, dims = bz_file.readline().strip().split(maxsplit=1)
 print(words, dims)
 embedding_matrix = numpy.zeros((len(chars)+1, int(dims)))
-
 
 lines = bz_file.readlines()
 counter = 0
@@ -44,14 +43,20 @@ for line in lines:
 
 print(lenstats)
 print(embedding_matrix.shape)
+# 4698
+# 4529
+#print(embedding_matrix[rxdict['。']])
+print(lenstats)
+print(embedding_matrix.shape)
 
 zeroind = numpy.where(~embedding_matrix.any(axis=1))[0]
 print(zeroind)
 
 embedding_matrix[zeroind] = initvector
-# numpy.save("../model/zhwiki_biembedding.npy", embedding_matrix)
+
 sparsem = csr_matrix(embedding_matrix)
-save_npz("../model/zhwiki_biembedding.npz", matrix=sparsem)
+save_npz("../model/zhwiki_triembedding.npz",matrix=sparsem)
+# numpy.save("../model/zhwiki_triembedding.npy", embedding_matrix)
 
 zeroind = numpy.where(~embedding_matrix.any(axis=1))[0]
 print(zeroind)
