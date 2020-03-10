@@ -2,7 +2,7 @@ import codecs
 
 from sklearn_crfsuite import metrics
 
-MODE = 27
+MODE = 28
 
 GOLD = '../plain/pku_test_states.txt'
 
@@ -86,6 +86,9 @@ if MODE==26:
 
 if MODE==27:
     TEST='pku_test_pretrained-extradim-initial-dropout-bilstm-bn_states.txt'
+
+if MODE==28:
+    TEST='pku_test_pretrained-extradim-trigram-dropout-bilstm-bn_states.txt'
 
 with codecs.open(TEST, 'r', encoding='utf8') as fj:
     with codecs.open(GOLD, 'r', encoding='utf8') as fg:
