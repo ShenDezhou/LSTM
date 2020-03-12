@@ -13,14 +13,14 @@ from keras.preprocessing.sequence import pad_sequences
 
 #               precision    recall  f1-score   support
 #
-#            B     0.9290    0.9365    0.9327     56882
-#            M     0.7100    0.7626    0.7354     11479
-#            E     0.9305    0.9324    0.9314     56882
-#            S     0.9297    0.9019    0.9156     47490
+#            B     0.9006    0.8426    0.8706     56882
+#            M     0.6563    0.6742    0.6651     11479
+#            E     0.8486    0.9144    0.8803     56882
+#            S     0.8454    0.8266    0.8359     47490
 #
-#    micro avg     0.9140    0.9140    0.9140    172733
-#    macro avg     0.8748    0.8833    0.8788    172733
-# weighted avg     0.9151    0.9140    0.9145    172733
+#    micro avg     0.8506    0.8506    0.8506    172733
+#    macro avg     0.8127    0.8144    0.8130    172733
+# weighted avg     0.8521    0.8506    0.8506    172733
 # {'mean_squared_error': 0.2586491465518497, 'mean_absolute_error': 0.27396197698378544, 'mean_absolute_percentage_error': 0.3323864857505891, 'mean_squared_logarithmic_error': 0.2666326968685906, 'squared_hinge': 0.2827528866772688, 'hinge': 0.27436352076398335, 'categorical_crossentropy': 0.3050300775957548, 'binary_crossentropy': 0.7499999871882543, 'kullback_leibler_divergence': 0.30747676168440974, 'poisson': 0.2897763648871911, 'cosine_proximity': 0.3213321868358391, 'sgd': 0.27380688950156684, 'rmsprop': 0.4363407859974404, 'adagrad': 0.5028908227192664, 'adadelta': 0.3134481079882679, 'adam': 0.342444794579377, 'adamax': 0.36860069757644914, 'nadam': 0.39635284171196516}
 
 dicts = []
@@ -145,7 +145,7 @@ model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
 
 model.summary()
 
-MODE = 1
+MODE = 2
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
@@ -186,14 +186,14 @@ if MODE == 1:
 
             history = model.fit(X, y, batch_size=batch_size, nb_epoch=EPOCHS, verbose=1)
 
-            model.save("keras/lstm-ow-dnn-bn.h5")
+            model.save("keras/B256-E30-F1.h5")
             print('FIN')
 
 if MODE == 2:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_lstmow_dnnbn_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/lstm-ow-dnn-bn.h5")
+        with codecs.open('baseline/pku_test_B256-E30-F1_states.txt', 'w', encoding='utf8') as fl:
+            model = load_model("keras/B256-E30-F1.h5")
             model.summary()
 
             xlines = ft.readlines()

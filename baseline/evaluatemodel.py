@@ -2,36 +2,36 @@ import codecs
 
 from sklearn_crfsuite import metrics
 
-MODE = 28
+MODE = 9
 
 GOLD = '../plain/pku_test_states.txt'
 
 if MODE == 1:
-    TEST = 'pku_test_jieba_states.txt'
+    TEST = 'pku_test_pretrained_context_unigram_states.txt'
 
 if MODE == 2:
-    TEST = 'pku_test_ik_states.txt'
+    TEST = 'pku_test_f1_states.txt'
 
 if MODE == 3:
-    TEST = 'pku_test_hmmstate.utf8'
+    TEST = 'pku_test_pretrained-context3-unigram-chartype_states.txt'
 
 if MODE == 4:
-    TEST = 'pku_test_crf_states.txt'
+    TEST = 'pku_test_B256-E30-F1_states.txt'
 
 if MODE == 5:
-    TEST = 'pku_test_hanlpsmart_states.txt'
+    TEST = 'pku_test_B20-E30-F1_states.txt'
 
 if MODE == 6:
-    TEST = 'pku_test_hanlpcrf_states.txt'
+    TEST = 'pku_test_B256-E30-F8-RU-A-CT-Ac_states.txt'
 
 if MODE == 7:
-    TEST = 'pku_test_hanlpper_states.txt'
+    TEST = 'pku_test_B256-E30-F3-RU-Bn-De_states.txt'
 
 if MODE == 8:
-    TEST = 'pku_test_hanlpnlp_states.txt'
+    TEST = 'pku_test_B20-E60-F1-PU-Bn-De_states.txt'
 
 if MODE == 9:
-    TEST = 'pku_test_lstm_states.txt'
+    TEST = 'pku_test_B64-E30-F1-Bn-CRF_states.txt'
 
 if MODE == 10:
     TEST = 'pku_test_lstmbn_states.txt'
@@ -89,6 +89,12 @@ if MODE==27:
 
 if MODE==28:
     TEST='pku_test_pretrained-extradim-trigram-dropout-bilstm-bn_states.txt'
+
+if MODE==29:
+    TEST='pku_test_pretrained-elevendim-trigram-dropout-bilstm_states.txt'
+
+if MODE==30:
+    TEST='pku_test_pretrained-elevendim-trigram-dropout-bilstm-bn_states.txt'
 
 with codecs.open(TEST, 'r', encoding='utf8') as fj:
     with codecs.open(GOLD, 'r', encoding='utf8') as fg:

@@ -20,14 +20,14 @@ from keras.initializers import Constant
 
 #               precision    recall  f1-score   support
 #
-#            B     0.9630    0.9552    0.9591     56882
-#            M     0.7642    0.8723    0.8147     11479
-#            E     0.9644    0.9549    0.9597     56882
-#            S     0.9467    0.9348    0.9407     47490
+#            B     0.9603    0.9578    0.9591     56882
+#            M     0.7858    0.8564    0.8196     11479
+#            E     0.9601    0.9550    0.9576     56882
+#            S     0.9428    0.9312    0.9370     47490
 #
-#    micro avg     0.9440    0.9440    0.9440    172733
-#    macro avg     0.9096    0.9293    0.9185    172733
-# weighted avg     0.9458    0.9440    0.9446    172733
+#    micro avg     0.9429    0.9429    0.9429    172733
+#    macro avg     0.9123    0.9251    0.9183    172733
+# weighted avg     0.9438    0.9429    0.9432    172733
 
 dicts = []
 unidicts = []
@@ -258,7 +258,7 @@ EPOCHS = 60
 
 
 
-MODE = 3
+MODE = 2
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
@@ -334,28 +334,23 @@ if MODE==2:
     maximumb = Maximum()([embeddedc, embeddedb])
 
     sumbigram = concatenate([embeddeda, maximuma, maximumb])
-    # bnBigram = BatchNormalization()(sumbigram)
     sumduplication = concatenate(embeddeds)
-    # bnType = BatchNormalization()(sumtypes)
     sumtype = concatenate(embeddedt)
 
     concat = concatenate([sumbigram, sumduplication, sumtype])
 
     dropout = SpatialDropout1D(rate=Dropoutrate)(concat)
     blstm = Bidirectional(CuDNNLSTM(Hidden, batch_input_shape=(maxlen, nFeatures), return_sequences=True), merge_mode='sum')(dropout)
-    # dropout = Dropout(rate=Dropoutrate)(blstm)
     batchNorm = BatchNormalization()(blstm)
     dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
 
     model = Model(input=sequence, output=dense)
-    # model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
-    # optimizer = Adagrad(lr=learningrate)
     model.compile(loss=loss, optimizer=optimizer, metrics=[metric])
     model.summary()
 
     with codecs.open('model/multiple/pku_train_crffeatures.pkl', 'rb') as fx:
         with codecs.open('model/multiple/pku_train_crfstates.pkl', 'rb') as fy:
-            with codecs.open('model/multiple/pku_train_lstmmodel.pkl', 'wb') as fm:
+            with codecs.open('model/f8puct/pku_train_lstmmodel.pkl', 'wb') as fm:
                 bx = fx.read()
                 by = fy.read()
                 X = pickle.loads(bx)
@@ -378,14 +373,14 @@ if MODE==2:
                 #     y, yp, labels=list("BMES"), digits=4
                 # )
                 # print(m)
-                model.save("keras/pretrained-ultradim-dropout-bilstm-bn.h5")
+                model.save("keras/B20-E60-F8-PU-CT-Bn-De.h5")
                 print('FIN')
 
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_pretrained-ultradim-dropout-bilstm-bn_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/pretrained-ultradim-dropout-bilstm-bn.h5")
+        with codecs.open('baseline/pku_test_pretrained-context3-unigram-chartype_states.txt', 'w', encoding='utf8') as fl:
+            model = load_model("keras/B20-E60-F8-PU-CT-Bn-De.h5")
             model.summary()
 
             xlines = ft.readlines()

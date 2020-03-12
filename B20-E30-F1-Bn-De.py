@@ -13,14 +13,14 @@ from keras.preprocessing.sequence import pad_sequences
 
 #               precision    recall  f1-score   support
 #
-#            B     0.7789    0.8620    0.8183     56882
-#            M     0.6289    0.3877    0.4797     11479
-#            E     0.7814    0.9046    0.8385     56882
-#            S     0.9087    0.7053    0.7942     47490
+#            B     0.8616    0.8769    0.8692     56882
+#            M     0.6349    0.5619    0.5962     11479
+#            E     0.8820    0.9035    0.8927     56882
+#            S     0.8629    0.8432    0.8529     47490
 #
-#    micro avg     0.8014    0.8014    0.8014    172733
-#    macro avg     0.7745    0.7149    0.7327    172733
-# weighted avg     0.8055    0.8014    0.7958    172733
+#    micro avg     0.8555    0.8555    0.8555    172733
+#    macro avg     0.8103    0.7964    0.8027    172733
+# weighted avg     0.8536    0.8555    0.8543    172733
 # {'mean_squared_error': 0.2586491465518497, 'mean_absolute_error': 0.27396197698378544, 'mean_absolute_percentage_error': 0.3323864857505891, 'mean_squared_logarithmic_error': 0.2666326968685906, 'squared_hinge': 0.2827528866772688, 'hinge': 0.27436352076398335, 'categorical_crossentropy': 0.3050300775957548, 'binary_crossentropy': 0.7499999871882543, 'kullback_leibler_divergence': 0.30747676168440974, 'poisson': 0.2897763648871911, 'cosine_proximity': 0.3213321868358391, 'sgd': 0.27380688950156684, 'rmsprop': 0.4363407859974404, 'adagrad': 0.5028908227192664, 'adadelta': 0.3134481079882679, 'adam': 0.342444794579377, 'adamax': 0.36860069757644914, 'nadam': 0.39635284171196516}
 
 dicts = []
@@ -186,14 +186,14 @@ if MODE == 1:
 
             history = model.fit(X, y, batch_size=batch_size, nb_epoch=EPOCHS, verbose=1)
 
-            model.save("keras/dropout-lstm-bn.h5")
+            model.save("keras/B20-E30-F1-Bn-De.h5")
             print('FIN')
 
 if MODE == 2:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_lstmow_dnn_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/dropout-lstm-bn.h5")
+        with codecs.open('baseline/pku_test_B20-E30-F1_states.txt', 'w', encoding='utf8') as fl:
+            model = load_model("keras/B20-E30-F1-Bn-De.h5")
             model.summary()
 
             xlines = ft.readlines()

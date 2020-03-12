@@ -13,15 +13,14 @@ from keras.preprocessing.sequence import pad_sequences
 
 #               precision    recall  f1-score   support
 #
-#            B     0.8926    0.9174    0.9048     56882
-#            M     0.7011    0.6456    0.6722     11479
-#            E     0.8954    0.9226    0.9088     56882
-#            S     0.9128    0.8666    0.8891     47490
+#            B     0.9204    0.9280    0.9242     56882
+#            M     0.6868    0.7491    0.7166     11479
+#            E     0.9234    0.9284    0.9259     56882
+#            S     0.9274    0.8917    0.9092     47490
 #
-#    micro avg     0.8871    0.8871    0.8871    172733
-#    macro avg     0.8505    0.8381    0.8437    172733
-# weighted avg     0.8863    0.8871    0.8864    172733
-# {'mean_squared_error': 0.2586491465518497, 'mean_absolute_error': 0.27396197698378544, 'mean_absolute_percentage_error': 0.3323864857505891, 'mean_squared_logarithmic_error': 0.2666326968685906, 'squared_hinge': 0.2827528866772688, 'hinge': 0.27436352076398335, 'categorical_crossentropy': 0.3050300775957548, 'binary_crossentropy': 0.7499999871882543, 'kullback_leibler_divergence': 0.30747676168440974, 'poisson': 0.2897763648871911, 'cosine_proximity': 0.3213321868358391, 'sgd': 0.27380688950156684, 'rmsprop': 0.4363407859974404, 'adagrad': 0.5028908227192664, 'adadelta': 0.3134481079882679, 'adam': 0.342444794579377, 'adamax': 0.36860069757644914, 'nadam': 0.39635284171196516}
+#    micro avg     0.9063    0.9063    0.9063    172733
+#    macro avg     0.8645    0.8743    0.8690    172733
+# weighted avg     0.9078    0.9063    0.9068    172733
 
 dicts = []
 unidicts = []
@@ -132,17 +131,10 @@ sequence = Input(shape=(maxlen,))
 embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(sequence)
 
 dropout = SpatialDropout1D(rate=Dropoutrate)(embedded)
-# blstm = Bidirectional(LSTM(Hidden, dropout=Dropoutrate, recurrent_dropout=Dropoutrate, return_sequences=True), merge_mode='sum')(dropout)
 blstm = Bidirectional(CuDNNLSTM(Hidden, return_sequences=True), merge_mode='sum')(dropout)
-# dropout = Dropout(Dropoutrate)(blstm)
-# batchNorm = BatchNormalization()(dropout)
 dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(blstm)
 model = Model(input=sequence, output=dense)
-# model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
-# optimizer = Adagrad(lr=learningrate)
 model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
-#model.save("keras/lstm1.h5")
-
 model.summary()
 
 MODE = 2
@@ -167,7 +159,6 @@ if MODE == 1:
                     print('.')
             print(len(X))
             X = numpy.array(X)
-            # X = pad_sequences(X, maxlen=maxlen, padding='pre', value=0)
             print(len(X), X.shape)
 
             print('process y list.')
@@ -181,19 +172,18 @@ if MODE == 1:
                 y.append(sline)
             print(len(y))
             y = numpy.array(y)
-            # y = pad_sequences(y, maxlen=maxlen, padding='pre', value=3)
             print(len(y), y.shape)
 
             history = model.fit(X, y, batch_size=batch_size, nb_epoch=EPOCHS, verbose=1)
 
-            model.save("keras/dropout-bilstm-dropout-bn.h5")
+            model.save("keras/B64-E30-F1-De.h5")
             print('FIN')
 
 if MODE == 2:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_dropout-bilstm-dropout-bn_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/dropout-bilstm-dropout-bn.h5")
+        with codecs.open('baseline/pku_test_f1_states.txt', 'w', encoding='utf8') as fl:
+            model = load_model("keras/B64-E30-F1-De.h5")
             model.summary()
 
             xlines = ft.readlines()

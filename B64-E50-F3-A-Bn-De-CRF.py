@@ -361,17 +361,17 @@ if MODE==2:
                 #     y, yp, labels=list("BMES"), digits=4
                 # )
                 # print(m)
-                model.save("keras/lstm.h5")
+                model.save("keras/B64-E50-F3-A-Bn-De-CRF.h5")
                 print('FIN')
 
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_lstmwithwindow_states.txt', 'w', encoding='utf8') as fl:
+        with codecs.open('baseline/pku_test_B64-E50-F3-A-Bn-De-CRF_states.txt', 'w', encoding='utf8') as fl:
             custom_objects = {'CRF': CRF,
                               'crf_loss': crf_loss,
                               'crf_accuracy': crf_accuracy}
-            model = load_model("keras/lstm.h5",custom_objects=custom_objects)
+            model = load_model("keras/B64-E50-F3-A-Bn-De-CRF.h5",custom_objects=custom_objects)
             model.summary()
 
             xlines = ft.readlines()

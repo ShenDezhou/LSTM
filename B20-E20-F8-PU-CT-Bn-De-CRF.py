@@ -1,4 +1,4 @@
-# lstm-crf
+# pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 import codecs
 import re
 import string
@@ -6,7 +6,7 @@ import pickle
 
 import numpy
 from keras import regularizers
-from keras.layers import Dense, Embedding, SpatialDropout1D, Input, Bidirectional, CuDNNLSTM, Lambda,  BatchNormalization, Average, Maximum, concatenate
+from keras.layers import Dense, Embedding, RepeatVector, add, Add, SpatialDropout1D, LSTM, Input, Bidirectional, Flatten,CuDNNLSTM, Lambda, Dropout, BatchNormalization, Maximum, concatenate,Reshape, Concatenate
 from keras.models import Model
 from keras.models import load_model
 from keras.optimizers import Adagrad
@@ -14,20 +14,22 @@ from sklearn_crfsuite import metrics
 from keras.preprocessing.sequence import pad_sequences
 import keras.backend as K
 from keras_contrib.layers import CRF
-from keras_contrib.losses import crf_loss
-from keras_contrib.metrics import crf_accuracy
+from keras_contrib.losses import crf_loss, crf_nll
+from keras_contrib.metrics import crf_accuracy, crf_marginal_accuracy
 from keras.initializers import Constant
+from keras.backend import repeat_elements
+
 
 #               precision    recall  f1-score   support
 #
-#            B     0.9558    0.9608    0.9583     56882
-#            M     0.7958    0.8355    0.8152     11479
-#            E     0.9552    0.9608    0.9580     56882
-#            S     0.9509    0.9268    0.9387     47490
+#            B     0.8629    0.7808    0.8198     56882
+#            M     0.0000    0.0000    0.0000     11479
+#            E     0.8933    0.9291    0.9109     56882
+#            S     0.7098    0.9282    0.8044     47490
 #
-#    micro avg     0.9431    0.9431    0.9431    172733
-#    macro avg     0.9144    0.9210    0.9175    172733
-# weighted avg     0.9436    0.9431    0.9433    172733
+#    micro avg     0.8183    0.8183    0.8183    172733
+#    macro avg     0.6165    0.6595    0.6338    172733
+# weighted avg     0.7735    0.8183    0.7911    172733
 
 dicts = []
 unidicts = []
@@ -110,6 +112,7 @@ def getNgram(sentence, i):
     ngrams.append(rxdict[ch])
     return ngrams
 
+
 def getFeaturesDict(sentence, i):
     features = []
     features.extend(getNgram(sentence, i))
@@ -119,15 +122,18 @@ def getFeaturesDict(sentence, i):
     return features
 
 def getCharType(ch):
+    dictofdicts = [puncdicts, digitsdicts, chidigitsdicts, letterdicts, unidicts, predicts, sufdicts]
+    extradicts = [longdicts, otherdicts]
+    if ch == '\n':
+        return str(len(dictofdicts) + len(extradicts) - 1)
+
     types = []
 
-    dictofdicts = [puncdicts, digitsdicts, chidigitsdicts, letterdicts, unidicts, predicts, sufdicts]
     for i in range(len(dictofdicts)):
         if ch in dictofdicts[i]:
             types.append(i)
             break
 
-    extradicts = [longdicts, otherdicts]
     for i in range(len(extradicts)):
         for word in extradicts[i]:
             if ch in word:
@@ -140,11 +146,9 @@ def getCharType(ch):
         return str(len(dictofdicts) + len(extradicts) - 1)
 
     assert len(types) == 1 or len(types) == 2, "{} {} {}".format(ch, len(types), types)
-    # onehot = [0] * (len(dictofdicts) + len(extradicts))
-    # for i in types:
-    #     onehot[i] = 1
 
     return str(types[0])
+
 
 
 def safea(sentence, i):
@@ -221,11 +225,12 @@ def getTypeVector(sentence, i):
     return types
 
 def getFeatures(sentence, i):
+    #3+2+3
     features = []
     features.extend(getBigramVector(sentence, i))
-    # features.extend(getReduplicationVector(sentence, i))
-    # features.extend(getTypeVector(sentence, i))
-    assert len(features) == 3, (len(features),features)
+    features.extend(getReduplicationVector(sentence, i))
+    features.extend(getTypeVector(sentence, i))
+    assert len(features) == 8, (len(features),features)
     return features
 
 
@@ -238,25 +243,30 @@ def getFeaturesDict(sentence, i):
     featuresdic = dict([(str(j), features[j]) for j in range(len(features))])
     return featuresdic
 
+
 batch_size = 20
 maxlen = 1019
-nFeatures = 3
+nFeatures = 3+2+3
 word_size = 100
+redup_size = 2
+type_size = 9
 Hidden = 150
 Regularization = 1e-4
 Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 60
+EPOCHS = 30
 
-MODE = 3
+
+
+MODE = 2
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('plain/pku_train_states.txt', 'r', encoding='utf8') as fs:
-            with codecs.open('model/pku_train_crffeatures.pkl', 'wb') as fx:
-                with codecs.open('model/pku_train_crfstates.pkl', 'wb') as fy:
+            with codecs.open('model/multiple/pku_train_crffeatures.pkl', 'wb') as fx:
+                with codecs.open('model/multiple/pku_train_crfstates.pkl', 'wb') as fy:
                     xlines = ft.readlines()
                     ylines = fs.readlines()
                     X = []
@@ -272,7 +282,7 @@ if MODE == 1:
                         # X.append([rxdict.get(e, 0) for e in list(line)])
                         # break
                         counter += 1
-                        if counter % 10000 == 0 and counter != 0:
+                        if counter % 1000 == 0 and counter != 0:
                             print('.')
 
                     X = numpy.array(X)
@@ -306,35 +316,49 @@ if MODE == 1:
                     fy.write(sy)
 
 if MODE==2:
-    loss = "squared_hinge"
+    loss = crf_loss#"squared_hinge"
     optimizer = "nadam"
-    metric= "accuracy"
+    metric= crf_accuracy#"accuracy"
     sequence = Input(shape=(maxlen,nFeatures,))
     seqsa, seqsb, seqsc = Lambda(lambda x: [x[:,:,0],x[:,:,1],x[:,:,2]])(sequence)
+    denseinputs = Lambda(lambda x: [x[:,:,3],x[:,:,4],x[:,:,5],x[:,:,6],x[:,:,7]])(sequence)
+    assert len(denseinputs) == 5
     zhwiki_emb = numpy.load("pku_dic/zhwiki_embedding.npy")
 
-    embeddeda = Embedding(len(chars) + 1, word_size,embeddings_initializer=Constant(zhwiki_emb), input_length=maxlen, mask_zero=False)(seqsa)
-    embeddedb = Embedding(len(chars) + 1, word_size,embeddings_initializer=Constant(zhwiki_emb), input_length=maxlen, mask_zero=False)(seqsb)
-    embeddedc = Embedding(len(chars) + 1, word_size,embeddings_initializer=Constant(zhwiki_emb), input_length=maxlen, mask_zero=False)(seqsc)
+    embeddeda = Embedding(len(chars) + 1, word_size, embeddings_initializer=Constant(zhwiki_emb),input_length=maxlen, mask_zero=False)(seqsa)
+    embeddedb = Embedding(len(chars) + 1, word_size, embeddings_initializer=Constant(zhwiki_emb), input_length=maxlen, mask_zero=False)(seqsb)
+    embeddedc = Embedding(len(chars) + 1, word_size, embeddings_initializer=Constant(zhwiki_emb), input_length=maxlen, mask_zero=False)(seqsc)
+
+    embeddeds = [Embedding(redup_size, word_size, input_length=maxlen, mask_zero=False)(i) for i in denseinputs[0:2]]
+    embeddedt = [Embedding(type_size, word_size, input_length=maxlen, mask_zero=False)(i) for i in denseinputs[2:]]
 
     maximuma = Maximum()([embeddeda, embeddedb])
     maximumb = Maximum()([embeddedc, embeddedb])
 
-    concat = concatenate([embeddeda, maximuma, maximumb])
+    sumbigram = concatenate([embeddeda, maximuma, maximumb])
+    # bnBigram = BatchNormalization()(sumbigram)
+    sumduplication = concatenate(embeddeds)
+    # bnType = BatchNormalization()(sumtypes)
+    sumtype = concatenate(embeddedt)
+
+    concat = concatenate([sumbigram, sumduplication, sumtype])
 
     dropout = SpatialDropout1D(rate=Dropoutrate)(concat)
-
-    blstm = Bidirectional(CuDNNLSTM(Hidden,batch_input_shape=(maxlen,nFeatures), return_sequences=True), merge_mode='sum')(dropout)
+    blstm = Bidirectional(CuDNNLSTM(Hidden, batch_input_shape=(maxlen, nFeatures), return_sequences=True), merge_mode='sum')(dropout)
+    # dropout = Dropout(rate=Dropoutrate)(blstm)
     batchNorm = BatchNormalization()(blstm)
+
     dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
+
+    dense = CRF(nState, sparse_target=True)(dense)
 
     model = Model(input=sequence, output=dense)
     model.compile(loss=loss, optimizer=optimizer, metrics=[metric])
     model.summary()
 
-    with codecs.open('model/pku_train_crffeatures.pkl', 'rb') as fx:
-        with codecs.open('model/pku_train_crfstates.pkl', 'rb') as fy:
-            with codecs.open('model/pku_train_lstmmodel.pkl', 'wb') as fm:
+    with codecs.open('model/multiple/pku_train_crffeatures.pkl', 'rb') as fx:
+        with codecs.open('model/multiple/pku_train_crfstates.pkl', 'rb') as fy:
+            with codecs.open('model/multiple/pku_train_lstmmodel.pkl', 'wb') as fm:
                 bx = fx.read()
                 by = fy.read()
                 X = pickle.loads(bx)
@@ -357,15 +381,15 @@ if MODE==2:
                 #     y, yp, labels=list("BMES"), digits=4
                 # )
                 # print(m)
-                model.save("keras/pretrained-hidim-dropout-bilstm-bn.h5")
+                model.save("keras/B20-E20-F8-PU-CT-Bn-De-CRF.h5")
                 print('FIN')
 
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_pretrained_context_unigram_states.txt', 'w', encoding='utf8') as fl:
-
-            model = load_model("keras/pretrained-hidim-dropout-bilstm-bn.h5")
+        with codecs.open('baseline/pku_test_B20-E20-F8-PU-CT-Bn-De-CRF_states.txt', 'w', encoding='utf8') as fl:
+            custom_objects = {"CRF":CRF,"crf_loss":crf_loss,"crf_accuracy":crf_accuracy}
+            model = load_model("keras/B20-E20-F8-PU-CT-Bn-De-CRF.h5", custom_objects=custom_objects)
             model.summary()
 
             xlines = ft.readlines()

@@ -14,14 +14,14 @@ from keras.initializers import Constant
 
 #               precision    recall  f1-score   support
 #
-#            B     0.9481    0.9439    0.9460     56882
-#            M     0.7077    0.8295    0.7638     11479
-#            E     0.9442    0.9400    0.9421     56882
-#            S     0.9406    0.9114    0.9257     47490
+#            B     0.9445    0.9460    0.9453     56882
+#            M     0.6950    0.8280    0.7557     11479
+#            E     0.9421    0.9359    0.9390     56882
+#            S     0.9441    0.9061    0.9247     47490
 #
-#    micro avg     0.9261    0.9261    0.9261    172733
-#    macro avg     0.8851    0.9062    0.8944    172733
-# weighted avg     0.9288    0.9261    0.9270    172733
+#    micro avg     0.9239    0.9239    0.9239    172733
+#    macro avg     0.8814    0.9040    0.8912    172733
+# weighted avg     0.9270    0.9239    0.9249    172733
 # {'mean_squared_error': 0.2586491465518497, 'mean_absolute_error': 0.27396197698378544, 'mean_absolute_percentage_error': 0.3323864857505891, 'mean_squared_logarithmic_error': 0.2666326968685906, 'squared_hinge': 0.2827528866772688, 'hinge': 0.27436352076398335, 'categorical_crossentropy': 0.3050300775957548, 'binary_crossentropy': 0.7499999871882543, 'kullback_leibler_divergence': 0.30747676168440974, 'poisson': 0.2897763648871911, 'cosine_proximity': 0.3213321868358391, 'sgd': 0.27380688950156684, 'rmsprop': 0.4363407859974404, 'adagrad': 0.5028908227192664, 'adadelta': 0.3134481079882679, 'adam': 0.342444794579377, 'adamax': 0.36860069757644914, 'nadam': 0.39635284171196516}
 
 dicts = []
@@ -125,7 +125,7 @@ Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 60#0.9981
+EPOCHS = 60
 
 loss = "squared_hinge"
 optimizer = "nadam"
@@ -141,10 +141,7 @@ blstm = Bidirectional(CuDNNLSTM(Hidden, return_sequences=True), merge_mode='sum'
 batchNorm = BatchNormalization()(blstm)
 dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
 model = Model(input=sequence, output=dense)
-# model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
-# optimizer = Adagrad(lr=learningrate)
 model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
-#model.save("keras/lstm1.h5")
 
 model.summary()
 
@@ -189,14 +186,14 @@ if MODE == 1:
 
             history = model.fit(X, y, batch_size=batch_size, nb_epoch=EPOCHS, verbose=1)
 
-            model.save("keras/pretrained-bilstm-bn.h5")
+            model.save("keras/B20-E60-F1-PU-Bn-De.h5")
             print('FIN')
 
 if MODE == 2:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_pretrained-bilstm-bn_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/pretrained-bilstm-bn.h5")
+        with codecs.open('baseline/pku_test_B20-E60-F1-PU-Bn-De_states.txt', 'w', encoding='utf8') as fl:
+            model = load_model("keras/B20-E60-F1-PU-Bn-De.h5")
             model.summary()
 
             xlines = ft.readlines()

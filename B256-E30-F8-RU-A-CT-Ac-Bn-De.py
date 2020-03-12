@@ -19,6 +19,17 @@ from keras_contrib.metrics import crf_accuracy
 
 #               precision    recall  f1-score   support
 #
+#            B     0.9119    0.7007    0.7925     56882
+#            M     0.0000    0.0000    0.0000     11479
+#            E     0.7147    0.9492    0.8154     56882
+#            S     0.7746    0.8721    0.8205     47490
+#
+#    micro avg     0.7831    0.7831    0.7831    172733
+#    macro avg     0.6003    0.6305    0.6071    172733
+# weighted avg     0.7486    0.7831    0.7551    172733
+
+#               precision    recall  f1-score   support
+#
 #            B     0.9343    0.9249    0.9296     56882
 #            M     0.6687    0.7603    0.7116     11479
 #            E     0.9339    0.9153    0.9245     56882
@@ -252,11 +263,11 @@ Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 30
+EPOCHS = 30#0.9726
 
 
 
-MODE = 2
+MODE = 3
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
@@ -372,14 +383,14 @@ if MODE==2:
                 #     y, yp, labels=list("BMES"), digits=4
                 # )
                 # print(m)
-                model.save("keras/ultradim-dropout-bilstm-bn.h5")
+                model.save("keras/B256-E30-F8-RU-A-CT-Ac-Bn-De.h5")
                 print('FIN')
 
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_ultradim-dropout-bilstm-bn_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/ultradim-dropout-bilstm-bn.h5")
+        with codecs.open('baseline/pku_test_B256-E30-F8-RU-A-CT-Ac_states.txt', 'w', encoding='utf8') as fl:
+            model = load_model("keras/B256-E30-F8-RU-A-CT-Ac-Bn-De.h5")
             model.summary()
 
             xlines = ft.readlines()

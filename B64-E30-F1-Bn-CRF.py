@@ -16,14 +16,14 @@ from keras_contrib.metrics import crf_accuracy
 
 #               precision    recall  f1-score   support
 #
-#            B     0.5346    0.1847    0.2745     56882
+#            B     0.4613    0.1371    0.2113     56882
 #            M     0.0000    0.0000    0.0000     11479
-#            E     0.5451    0.1869    0.2784     56882
-#            S     0.3316    0.9327    0.4893     47490
+#            E     0.4979    0.1469    0.2269     56882
+#            S     0.3200    0.9369    0.4770     47490
 #
-#    micro avg     0.3788    0.3788    0.3788    172733
-#    macro avg     0.3528    0.3261    0.2605    172733
-# weighted avg     0.4467    0.3788    0.3166    172733
+#    micro avg     0.3511    0.3511    0.3511    172733
+#    macro avg     0.3198    0.3052    0.2288    172733
+# weighted avg     0.4038    0.3511    0.2755    172733
 # {'mean_squared_error': 0.2586491465518497, 'mean_absolute_error': 0.27396197698378544, 'mean_absolute_percentage_error': 0.3323864857505891, 'mean_squared_logarithmic_error': 0.2666326968685906, 'squared_hinge': 0.2827528866772688, 'hinge': 0.27436352076398335, 'categorical_crossentropy': 0.3050300775957548, 'binary_crossentropy': 0.7499999871882543, 'kullback_leibler_divergence': 0.30747676168440974, 'poisson': 0.2897763648871911, 'cosine_proximity': 0.3213321868358391, 'sgd': 0.27380688950156684, 'rmsprop': 0.4363407859974404, 'adagrad': 0.5028908227192664, 'adadelta': 0.3134481079882679, 'adam': 0.342444794579377, 'adamax': 0.36860069757644914, 'nadam': 0.39635284171196516}
 
 dicts = []
@@ -127,7 +127,7 @@ Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 30
+EPOCHS = 30#0.9393
 
 loss = crf_loss#"squared_hinge"
 optimizer = "nadam"
@@ -135,18 +135,13 @@ sequence = Input(shape=(maxlen,))
 embedded = Embedding(len(chars) + 1, word_size, input_length=maxlen, mask_zero=False)(sequence)
 
 dropout = SpatialDropout1D(rate=Dropoutrate)(embedded)
-# blstm = Bidirectional(LSTM(Hidden, dropout=Dropoutrate, recurrent_dropout=Dropoutrate, return_sequences=True), merge_mode='sum')(dropout)
 blstm = Bidirectional(CuDNNLSTM(Hidden, return_sequences=True), merge_mode='sum')(dropout)
-# dropout = Dropout(Dropoutrate)(blstm)
 batchNorm = BatchNormalization()(blstm)
-dense = CRF(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
-# dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(crf)
+dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
+dense = CRF(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(dense)
 
 model = Model(input=sequence, output=dense)
-# model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
-# optimizer = Adagrad(lr=learningrate)
 model.compile(loss=loss, optimizer=optimizer, metrics=[crf_accuracy])
-#model.save("keras/lstm1.h5")
 
 model.summary()
 
@@ -191,17 +186,17 @@ if MODE == 1:
 
             history = model.fit(X, y, batch_size=batch_size, nb_epoch=EPOCHS, verbose=1)
 
-            model.save("keras/dropout-bilstm-bn-crf.h5")
+            model.save("keras/B64-E30-F1-Bn-CRF.h5")
             print('FIN')
 
 if MODE == 2:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_lstm_dnnbncrf_states.txt', 'w', encoding='utf8') as fl:
+        with codecs.open('baseline/pku_test_B64-E30-F1-Bn-CRF_states.txt', 'w', encoding='utf8') as fl:
             custom_objects = {'CRF': CRF,
                               'crf_loss': crf_loss,
                               'crf_accuracy': crf_accuracy}
-            model = load_model("keras/dropout-bilstm-bn-crf.h5",custom_objects=custom_objects)
+            model = load_model("keras/B64-E30-F1-Bn-CRF.h5",custom_objects=custom_objects)
             model.summary()
 
             xlines = ft.readlines()

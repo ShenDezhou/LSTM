@@ -19,14 +19,14 @@ from keras_contrib.metrics import crf_accuracy
 
 #               precision    recall  f1-score   support
 #
-#            B     0.8839    0.9369    0.9096     56882
-#            M     0.6343    0.8323    0.7199     11479
-#            E     0.8584    0.9464    0.9002     56882
-#            S     0.9759    0.7123    0.8235     47490
+#            B     0.8933    0.9360    0.9142     56882
+#            M     0.6464    0.8243    0.7246     11479
+#            E     0.8693    0.9487    0.9072     56882
+#            S     0.9695    0.7433    0.8415     47490
 #
-#    micro avg     0.8713    0.8713    0.8713    172733
-#    macro avg     0.8381    0.8570    0.8383    172733
-# weighted avg     0.8842    0.8713    0.8702    172733
+#    micro avg     0.8798    0.8798    0.8798    172733
+#    macro avg     0.8446    0.8631    0.8469    172733
+# weighted avg     0.8899    0.8798    0.8793    172733
 
 dicts = []
 unidicts = []
@@ -251,7 +251,7 @@ EPOCHS = 30
 
 
 
-MODE = 3
+MODE = 2
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
@@ -360,15 +360,15 @@ if MODE==2:
                 #     y, yp, labels=list("BMES"), digits=4
                 # )
                 # print(m)
-                model.save("keras/hidim-dropout-bilstm-bn.h5")
+                model.save("keras/B256-E30-F3-RU-Bn-De.h5")
                 print('FIN')
 
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_hidim_bilstm_bn_states.txt', 'w', encoding='utf8') as fl:
+        with codecs.open('baseline/pku_test_B256-E30-F3-RU-Bn-De_states.txt', 'w', encoding='utf8') as fl:
 
-            model = load_model("keras/hidim-dropout-bilstm-bn.h5")
+            model = load_model("keras/B256-E30-F3-RU-Bn-De.h5")
             model.summary()
 
             xlines = ft.readlines()
