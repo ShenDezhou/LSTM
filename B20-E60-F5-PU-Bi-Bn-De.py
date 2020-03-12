@@ -291,7 +291,7 @@ EPOCHS = 60
 
 
 
-MODE = 3
+MODE = 2
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
@@ -385,7 +385,7 @@ if MODE==2:
 
     with codecs.open('model/ngrams/pku_train_crffeatures.pkl', 'rb') as fx:
         with codecs.open('model/ngrams/pku_train_crfstates.pkl', 'rb') as fy:
-            with codecs.open('model/pku_train_lstm_pretrainedbigram_model.pkl', 'wb') as fm:
+            with codecs.open('model/pku_train_B20-E60-F5-PU-Bi-Bn-De_model.pkl', 'wb') as fm:
                 bx = fx.read()
                 by = fy.read()
                 X = pickle.loads(bx)
@@ -409,9 +409,9 @@ if MODE==2:
                 # )
                 # print(m)
                 model_json = model.to_json()
-                with open("keras/pretrained-bigram-dropout-bilstm-bn-arch.json", "w") as json_file:
+                with open("keras/B20-E60-F5-PU-Bi-Bn-De.json", "w") as json_file:
                     json_file.write(model_json)
-                model.save_weights("keras/pretrained-bigram-dropout-bilstm-bn-weights.h5")
+                model.save_weights("keras/B20-E60-F5-PU-Bi-Bn-De-weights.h5")
 
                 # model.save("keras/pretrained-bigram-dropout-bilstm-bn.h5")
                 print('FIN')
@@ -419,13 +419,13 @@ if MODE==2:
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_pretrained_bigram_bilstm_bn_states.txt', 'w', encoding='utf8') as fl:
+        with codecs.open('baseline/pku_test_B20-E60-F5-PU-Bi-Bn-De_states.txt', 'w', encoding='utf8') as fl:
 
-            json_file = open('keras/pretrained-bigram-dropout-bilstm-bn-arch.json', 'r')
+            json_file = open('keras/B20-E60-F5-PU-Bi-Bn-De.json', 'r')
             loaded_model_json = json_file.read()
             json_file.close()
             model = model_from_json(loaded_model_json)
-            model.load_weights("keras/pretrained-bigram-dropout-bilstm-bn-weights.h5")
+            model.load_weights("keras/B20-E60-F5-PU-Bi-Bn-De-weights.h5")
 
             # model = load_model("keras/pretrained-bigram-dropout-bilstm-bn.h5")
             model.summary()

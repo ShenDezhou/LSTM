@@ -19,14 +19,14 @@ from keras_contrib.metrics import crf_accuracy
 
 #               precision    recall  f1-score   support
 #
-#            B     0.9263    0.9122    0.9192     56882
-#            M     0.7086    0.7588    0.7328     11479
-#            E     0.9341    0.9193    0.9266     56882
-#            S     0.8883    0.9061    0.8971     47490
+#            B     0.5050    0.1374    0.2160     56882
+#            M     0.0000    0.0000    0.0000     11479
+#            E     0.5250    0.1416    0.2231     56882
+#            S     0.3170    0.9474    0.4751     47490
 #
-#    micro avg     0.9027    0.9027    0.9027    172733
-#    macro avg     0.8643    0.8741    0.8689    172733
-# weighted avg     0.9040    0.9027    0.9032    172733
+#    micro avg     0.3523    0.3523    0.3523    172733
+#    macro avg     0.3368    0.3066    0.2285    172733
+# weighted avg     0.4264    0.3523    0.2752    172733
 
 dicts = []
 unidicts = []
@@ -251,7 +251,7 @@ EPOCHS = 50
 
 
 
-MODE = 2
+MODE = 3
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:

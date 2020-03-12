@@ -379,7 +379,7 @@ if MODE==2:
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_pretrained-context3-unigram-chartype_states.txt', 'w', encoding='utf8') as fl:
+        with codecs.open('baseline/pku_test_B20-E60-F8-PU-CT-Bn-De_states.txt', 'w', encoding='utf8') as fl:
             model = load_model("keras/B20-E60-F8-PU-CT-Bn-De.h5")
             model.summary()
 

@@ -138,7 +138,7 @@ dropout = SpatialDropout1D(rate=Dropoutrate)(embedded)
 blstm = Bidirectional(CuDNNLSTM(Hidden, return_sequences=True), merge_mode='sum')(dropout)
 batchNorm = BatchNormalization()(blstm)
 dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
-dense = CRF(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(dense)
+dense = CRF(nState, sparse_target=True, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(dense)
 
 model = Model(input=sequence, output=dense)
 model.compile(loss=loss, optimizer=optimizer, metrics=[crf_accuracy])

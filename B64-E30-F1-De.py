@@ -182,7 +182,7 @@ if MODE == 1:
 if MODE == 2:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_f1_states.txt', 'w', encoding='utf8') as fl:
+        with codecs.open('baseline/pku_test_B64-E30-F1-De_states.txt', 'w', encoding='utf8') as fl:
             model = load_model("keras/B64-E30-F1-De.h5")
             model.summary()
 

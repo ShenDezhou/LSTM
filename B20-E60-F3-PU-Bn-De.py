@@ -357,15 +357,15 @@ if MODE==2:
                 #     y, yp, labels=list("BMES"), digits=4
                 # )
                 # print(m)
-                model.save("keras/pretrained-hidim-dropout-bilstm-bn.h5")
+                model.save("keras/B20-E60-F3-PU-Bn-De.h5")
                 print('FIN')
 
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_pretrained_context_unigram_states.txt', 'w', encoding='utf8') as fl:
+        with codecs.open('baseline/pku_test_B20-E60-F3-PU-Bn-De_states.txt', 'w', encoding='utf8') as fl:
 
-            model = load_model("keras/pretrained-hidim-dropout-bilstm-bn.h5")
+            model = load_model("keras/B20-E60-F3-PU-Bn-De.h5")
             model.summary()
 
             xlines = ft.readlines()
