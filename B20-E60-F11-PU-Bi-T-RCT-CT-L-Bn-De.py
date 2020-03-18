@@ -23,14 +23,14 @@ from scipy import sparse
 
 #               precision    recall  f1-score   support
 #
-#            B     0.9590    0.9399    0.9493     56882
-#            M     0.8564    0.6406    0.7330     11479
-#            E     0.9539    0.9259    0.9397     56882
-#            S     0.8555    0.9580    0.9038     47490
+#            B     0.5479    0.7213    0.6227     56882
+#            M     0.5376    0.3263    0.4061     11479
+#            E     0.6812    0.4765    0.5608     56882
+#            S     0.6202    0.6670    0.6428     47490
 #
-#    micro avg     0.9204    0.9204    0.9204    172733
-#    macro avg     0.9062    0.8661    0.8815    172733
-# weighted avg     0.9220    0.9204    0.9193    172733
+#    micro avg     0.5995    0.5995    0.5995    172733
+#    macro avg     0.5967    0.5478    0.5581    172733
+# weighted avg     0.6110    0.5995    0.5934    172733
 
 
 dicts = []
@@ -413,14 +413,14 @@ if MODE==2:
     # zhwiki_biemb = numpy.load("model/zhwiki_biembedding.npy")
     zhwiki_biemb = sparse.load_npz("model/zhwiki_biembedding.npz").todense()
     embeddedd = Embedding(len(bigrams) + 1, word_size, input_length=maxlen,embeddings_initializer=Constant(zhwiki_biemb),
-                          mask_zero=False)(seqsd)
+                          mask_zero=True)(seqsd)
     embeddede = Embedding(len(bigrams) + 1, word_size, input_length=maxlen,embeddings_initializer=Constant(zhwiki_biemb),
-                          mask_zero=False)(seqse)
+                          mask_zero=True)(seqse)
 
     # zhwiki_triemb = numpy.load("model/zhwiki_triembedding.npy")
     zhwiki_triemb = sparse.load_npz("model/zhwiki_triembedding.npz").todense()
     embeddedf = Embedding(len(trigrams) + 1, word_size, input_length=maxlen,embeddings_initializer=Constant(zhwiki_triemb),
-                          mask_zero=False)(seqsf)
+                          mask_zero=True)(seqsf)
 
     embeddeds = [Embedding(redup_size, word_size, embeddings_regularizer=regularizers.l2(Regularization),  input_length=maxlen, mask_zero=False)(i) for i in denseinputs[0:2]]
     embeddedt = [Embedding(type_size, word_size, embeddings_regularizer=regularizers.l2(Regularization), input_length=maxlen, mask_zero=False)(i) for i in denseinputs[2:]]
@@ -429,35 +429,24 @@ if MODE==2:
     maximumb = Maximum()([embeddedc, embeddedb])
 
     sumbigram = concatenate([embeddeda, maximuma, maximumb, embeddedd, embeddede, embeddedf])
-    # bnBigram = BatchNormalization()(sumbigram)
     sumduplication = concatenate(embeddeds)
-    # bnType = BatchNormalization()(sumtypes)
     sumtype = concatenate(embeddedt)
 
     concat = concatenate([sumbigram, sumduplication, sumtype])
 
     dropout = SpatialDropout1D(rate=Dropoutrate)(concat)
-    blstm = Bidirectional(CuDNNLSTM(Hidden, batch_input_shape=(maxlen, nFeatures), return_sequences=True), merge_mode='sum')(dropout)
-    # dropout = Dropout(rate=Dropoutrate)(blstm)
+    # blstm = Bidirectional(CuDNNLSTM(Hidden, batch_input_shape=(maxlen, nFeatures), return_sequences=True), merge_mode='sum')(dropout)
+    blstm = Bidirectional(LSTM(Hidden, batch_input_shape=(maxlen, nFeatures), return_sequences=True),merge_mode='sum')(dropout)
     batchNorm = BatchNormalization()(blstm)
     dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(batchNorm)
 
     model = Model(input=sequence, output=dense)
-    # model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
-    # optimizer = Adagrad(lr=learningrate)
     model.compile(loss=loss, optimizer=optimizer, metrics=[metric])
     model.summary()
 
-    model_json = model.to_json()
-    with open("keras/pretrained-extradim-initial-dropout-bilstm-bn-arch.json", "w") as json_file:
-        json_file.write(model_json)
-    model.save_weights("keras/pretrained-extradim-initial-dropout-bilstm-bn-weights.h5")
-    #model.save("keras/pretrained-extradim-dropout-bilstm-bn.h5")
-    print("INI")
-
     with codecs.open('model/initial/pku_train_crffeatures.pkl', 'rb') as fx:
         with codecs.open('model/initial/pku_train_crfstates.pkl', 'rb') as fy:
-            with codecs.open('model/initial/pku_train_lstmmodel.pkl', 'wb') as fm:
+            with codecs.open('model/initial/pku_train_B20-E60-F11-PU-Bi-T-RCT-CT-L-Bn-De_model.pkl', 'wb') as fm:
                 bx = fx.read()
                 by = fy.read()
                 X = pickle.loads(bx)
@@ -481,17 +470,17 @@ if MODE==2:
                 # )
                 # print(m)
                 model_json = model.to_json()
-                with open("keras/pretrained-extradim-initial-dropout-bilstm-bn-arch.json", "w") as json_file:
+                with open("keras/B20-E60-F11-PU-Bi-T-RCT-CT-L-Bn-De.json", "w") as json_file:
                     json_file.write(model_json)
-                model.save_weights("keras/pretrained-initial-extradim-dropout-bilstm-bn-weights.h5")
+                model.save_weights("keras/B20-E60-F11-PU-Bi-T-RCT-CT-L-Bn-De-weights.h5")
                 # model.save("keras/pretrained-extradim-dropout-bilstm-bn.h5")
                 print('FIN')
 
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_pretrained-extradim-initial-dropout-bilstm-bn_states.txt', 'w', encoding='utf8') as fl:
-            with codecs.open('model/initial/pku_train_lstmmodel.pkl', 'rb') as fm:
+        with codecs.open('baseline/pku_test_B20-E60-F11-PU-Bi-T-RCT-CT-L-Bn-De_states.txt', 'w', encoding='utf8') as fl:
+            with codecs.open('model/initial/pku_train_B20-E60-F11-PU-Bi-T-RCT-CT-L-Bn-De_model.pkl', 'rb') as fm:
                 bm = fm.read()
                 model = pickle.loads(bm)
                 # model.save("keras/pretrained-extradim-initial-dropout-bilstm-bn.h5")

@@ -444,7 +444,7 @@ if MODE==2:
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_pretrained-extradim-wide-dropout-bilstm-bn_states.txt', 'w', encoding='utf8') as fl:
+        with codecs.open('baseline/pku_test_B20-E60-F10-PU-Bi-RCT-CT-Bn-De_states.txt', 'w', encoding='utf8') as fl:
             with codecs.open('model/extra/pku_train_lstmmodel.pkl', 'rb') as fm:
                 bm = fm.read()
                 model = pickle.loads(bm)

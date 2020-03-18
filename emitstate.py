@@ -1,8 +1,8 @@
 import codecs
 
 INPUT = 'plain/pku_test.utf8'
-STATE = 'baseline/pku_test_B20-E60-F3-PU-Bn-De_states.txt'
-OUTPUT = "plain/pku_test_B20-E60-F3-PU-Bn-De.utf8"
+STATE = 'baseline/pku_test_B20-E60-F10-PU-Bi-RCT-CT-Bn-De_states.txt'
+OUTPUT = "plain/pku_test_B20-E60-F10-PU-Bi-RCT-CT-Bn-De.utf8"
 
 statenames = "BMES"
 with codecs.open(OUTPUT, 'w', encoding='utf8') as wf:

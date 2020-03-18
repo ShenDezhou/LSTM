@@ -28,6 +28,7 @@ from keras.initializers import Constant
 #    micro avg     0.9431    0.9431    0.9431    172733
 #    macro avg     0.9144    0.9210    0.9175    172733
 # weighted avg     0.9436    0.9431    0.9433    172733
+#0.936
 
 dicts = []
 unidicts = []

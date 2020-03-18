@@ -18,7 +18,7 @@ rxdict = dict(zip(chars, range(1, 1 + len(chars))))
 bz_file = bz2.BZ2File("../model/zhwiki_20180420_100d.txt.bz2")
 words, dims = bz_file.readline().strip().split(maxsplit=1)
 print(words, dims)
-embedding_matrix = numpy.zeros((len(chars)+1, int(dims)))
+embedding_matrix = numpy.zeros((len(chars)+1, int(dims)), dtype=float)
 
 #for fast checking existance
 schar = set(chars)

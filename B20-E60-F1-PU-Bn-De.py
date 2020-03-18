@@ -144,6 +144,7 @@ model = Model(input=sequence, output=dense)
 model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
 
 model.summary()
+model.save("keras/B20-E60-F1-PU-Bn-De.h5")
 
 MODE = 2
 

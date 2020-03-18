@@ -20,14 +20,14 @@ from keras.initializers import Constant
 
 #               precision    recall  f1-score   support
 #
-#            B     0.9644    0.9534    0.9589     56882
-#            M     0.7692    0.8507    0.8079     11479
-#            E     0.9623    0.9531    0.9577     56882
-#            S     0.9368    0.9363    0.9366     47490
+#            B     0.9616    0.9598    0.9607     56882
+#            M     0.7737    0.8546    0.8122     11479
+#            E     0.9648    0.9449    0.9548     56882
+#            S     0.9370    0.9386    0.9378     47490
 #
-#    micro avg     0.9418    0.9418    0.9418    172733
-#    macro avg     0.9082    0.9234    0.9152    172733
-# weighted avg     0.9431    0.9418    0.9423    172733
+#    micro avg     0.9421    0.9421    0.9421    172733
+#    macro avg     0.9093    0.9245    0.9164    172733
+# weighted avg     0.9434    0.9421    0.9426    172733
 
 dicts = []
 unidicts = []
@@ -291,7 +291,7 @@ EPOCHS = 60
 
 
 
-MODE = 2
+MODE = 3
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
