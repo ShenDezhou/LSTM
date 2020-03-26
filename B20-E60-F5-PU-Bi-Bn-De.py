@@ -291,7 +291,7 @@ EPOCHS = 60
 
 
 
-MODE = 3
+MODE = 4
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
@@ -413,7 +413,7 @@ if MODE==2:
                     json_file.write(model_json)
                 model.save_weights("keras/B20-E60-F5-PU-Bi-Bn-De-weights.h5")
 
-                # model.save("keras/pretrained-bigram-dropout-bilstm-bn.h5")
+                # model.save("keras/B20-E60-F5-PU-Bi-Bn-De.h5")
                 print('FIN')
 
 if MODE == 3:
@@ -456,3 +456,11 @@ if MODE == 3:
                 fl.write('\n')
             print('FIN')
 
+if MODE==4:
+    json_file = open('keras/B20-E60-F5-PU-Bi-Bn-De.json', 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    model = model_from_json(loaded_model_json)
+    model.load_weights("keras/B20-E60-F5-PU-Bi-Bn-De-weights.h5")
+
+    model.save(r"C:\Users\Administrator\Desktop\B20-E60-F5-PU-Bi-Bn-De.h5")

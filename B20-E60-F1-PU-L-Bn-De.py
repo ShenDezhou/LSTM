@@ -146,7 +146,7 @@ model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
 model.summary()
 model.save("keras/B20-E60-F1-PU-L-Bn-De.h5")
 
-MODE = 1
+MODE = 2
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:

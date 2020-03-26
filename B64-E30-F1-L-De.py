@@ -13,14 +13,14 @@ from keras.preprocessing.sequence import pad_sequences
 
 #               precision    recall  f1-score   support
 #
-#            B     0.9204    0.9280    0.9242     56882
-#            M     0.6868    0.7491    0.7166     11479
-#            E     0.9234    0.9284    0.9259     56882
-#            S     0.9274    0.8917    0.9092     47490
+#            B     0.9220    0.9332    0.9276     56882
+#            M     0.7071    0.7382    0.7223     11479
+#            E     0.9251    0.9377    0.9313     56882
+#            S     0.9329    0.8942    0.9131     47490
 #
-#    micro avg     0.9063    0.9063    0.9063    172733
-#    macro avg     0.8645    0.8743    0.8690    172733
-# weighted avg     0.9078    0.9063    0.9068    172733
+#     accuracy                         0.9110    172733
+#    macro avg     0.8718    0.8758    0.8736    172733
+# weighted avg     0.9117    0.9110    0.9112    172733
 
 dicts = []
 unidicts = []
@@ -138,7 +138,7 @@ model = Model(input=sequence, output=dense)
 model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
 model.summary()
 
-MODE = 1
+MODE = 2
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:

@@ -1,4 +1,3 @@
-# lstm-crf
 import codecs
 import re
 import string

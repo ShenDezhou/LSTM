@@ -28,7 +28,7 @@ from keras.preprocessing.sequence import pad_sequences
 # squared_hinge 0.2827528866772688
 # hinge 0.27436352076398335
 # categorical_crossentropy 0.3050300775957548
-# binary_crossentropy 0.7499999871882543
+# binary_crossentropy 0.7499999871882543 注：keras对两者使用了不同的metrics计算acc，对于binary_crossentropy使用的是binary_accuracy，对于categorical_crossentropy使用的是categorical_accuracy
 # kullback_leibler_divergence 0.30747676168440974
 # poisson 0.2897763648871911
 # cosine_proximity 0.3213321868358391

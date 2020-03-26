@@ -2,7 +2,7 @@ import codecs
 
 from sklearn_crfsuite import metrics
 
-MODE = 13
+MODE = 15
 
 GOLD = '../plain/pku_test_states.txt'
 
@@ -46,10 +46,10 @@ if MODE == 13:
     TEST = 'pku_test_B20-E60-F10-PU-Bi-RCT-CT-Bn-De_states.txt'
 
 if MODE == 14:
-    TEST = 'pku_test_lstmow_dnn_states.txt'
+    TEST = 'pku_test_B64-E30-F1-L-De_states.txt'
 
 if MODE == 15:
-    TEST = 'pku_test_lstm_dnnbncrf_states.txt'
+    TEST = 'pku_test_B20-E60-F3-PU-C-Bn-De_states.txt'
 
 if MODE== 16:
     TEST = 'pku_test_hidim_bilstm_bn_states.txt'

@@ -20,4 +20,4 @@ with codecs.open(OUTPUT, 'w', encoding='utf8') as wf:
                     if stateline[i] == 'E' or stateline[i] == 'S':
                         wf.write("  ")
                 wf.write('\n')
-    print("FIN")
+print("FIN")
