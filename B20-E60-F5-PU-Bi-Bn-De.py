@@ -1,5 +1,6 @@
 # lstm-crf
 import codecs
+import os
 import re
 import string
 import pickle
@@ -10,6 +11,7 @@ from keras.layers import Dense, Embedding, SpatialDropout1D, Input, Bidirectiona
 from keras.models import Model
 from keras.models import load_model, model_from_json
 from keras.optimizers import Adagrad
+from scipy import sparse
 from sklearn_crfsuite import metrics
 from keras.preprocessing.sequence import pad_sequences
 import keras.backend as K
@@ -288,16 +290,16 @@ learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
 EPOCHS = 60
+modelfile = os.path.basename(__file__).split(".")[0]
 
 
-
-MODE = 4
+MODE = 2
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('plain/pku_train_states.txt', 'r', encoding='utf8') as fs:
-            with codecs.open('model/ngrams/pku_train_crffeatures.pkl', 'wb') as fx:
-                with codecs.open('model/ngrams/pku_train_crfstates.pkl', 'wb') as fy:
+            with codecs.open('model/f5/pku_train_crffeatures.pkl', 'wb') as fx:
+                with codecs.open('model/f5/pku_train_crfstates.pkl', 'wb') as fy:
                     xlines = ft.readlines()
                     ylines = fs.readlines()
                     X = []
@@ -361,7 +363,8 @@ if MODE==2:
     maximuma = Maximum()([embeddeda, embeddedb])
     maximumb = Maximum()([embeddedc, embeddedb])
 
-    zhwiki_biemb = numpy.load("model/zhwiki_biembedding.npy")
+    # zhwiki_biemb = numpy.load("model/zhwiki_biembedding.npy")
+    zhwiki_biemb = sparse.load_npz("model/zhwiki_biembedding.npz").todense()
     embeddedd = Embedding(len(bigrams) + 1, word_size, input_length=maxlen,embeddings_initializer=Constant(zhwiki_biemb),
                           mask_zero=False)(seqsd)
     embeddede = Embedding(len(bigrams) + 1, word_size, input_length=maxlen,embeddings_initializer=Constant(zhwiki_biemb),
@@ -383,9 +386,9 @@ if MODE==2:
     model.compile(loss=loss, optimizer=optimizer, metrics=[metric])
     model.summary()
 
-    with codecs.open('model/ngrams/pku_train_crffeatures.pkl', 'rb') as fx:
-        with codecs.open('model/ngrams/pku_train_crfstates.pkl', 'rb') as fy:
-            with codecs.open('model/pku_train_B20-E60-F5-PU-Bi-Bn-De_model.pkl', 'wb') as fm:
+    with codecs.open('model/f5/pku_train_crffeatures.pkl', 'rb') as fx:
+        with codecs.open('model/f5/pku_train_crfstates.pkl', 'rb') as fy:
+            with codecs.open('model/pku_train_%s_model.pkl'%modelfile, 'wb') as fm:
                 bx = fx.read()
                 by = fy.read()
                 X = pickle.loads(bx)
@@ -409,23 +412,23 @@ if MODE==2:
                 # )
                 # print(m)
                 model_json = model.to_json()
-                with open("keras/B20-E60-F5-PU-Bi-Bn-De.json", "w") as json_file:
+                with open("keras/%s.json"%modelfile, "w") as json_file:
                     json_file.write(model_json)
-                model.save_weights("keras/B20-E60-F5-PU-Bi-Bn-De-weights.h5")
+                model.save_weights("keras/%s-weights.h5"%modelfile)
 
-                # model.save("keras/B20-E60-F5-PU-Bi-Bn-De.h5")
+                model.save("keras/%s.h5"%modelfile)
                 print('FIN')
 
 if MODE == 3:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-        with codecs.open('baseline/pku_test_B20-E60-F5-PU-Bi-Bn-De_states.txt', 'w', encoding='utf8') as fl:
+        with codecs.open('baseline/pku_test_%s_states.txt'%modelfile, 'w', encoding='utf8') as fl:
 
-            json_file = open('keras/B20-E60-F5-PU-Bi-Bn-De.json', 'r')
+            json_file = open('keras/%s.json'%modelfile, 'r')
             loaded_model_json = json_file.read()
             json_file.close()
             model = model_from_json(loaded_model_json)
-            model.load_weights("keras/B20-E60-F5-PU-Bi-Bn-De-weights.h5")
+            model.load_weights("keras/%s-weights.h5"%modelfile)
 
             # model = load_model("keras/pretrained-bigram-dropout-bilstm-bn.h5")
             model.summary()
@@ -457,10 +460,10 @@ if MODE == 3:
             print('FIN')
 
 if MODE==4:
-    json_file = open('keras/B20-E60-F5-PU-Bi-Bn-De.json', 'r')
+    json_file = open('keras/%s.json'%modelfile, 'r')
     loaded_model_json = json_file.read()
     json_file.close()
     model = model_from_json(loaded_model_json)
-    model.load_weights("keras/B20-E60-F5-PU-Bi-Bn-De-weights.h5")
+    model.load_weights("keras/%s-weights.h5"%modelfile)
 
-    model.save(r"C:\Users\Administrator\Desktop\B20-E60-F5-PU-Bi-Bn-De.h5")
+    model.save(r"C:\Users\Administrator\Desktop\%s.h5"%modelfile)
