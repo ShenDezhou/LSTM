@@ -668,10 +668,10 @@
                 //过滤空串
                 this.originList = data.split('\n').filter(word => word.trim().length > 0);
                 //构造字典
-                this.rawsentences.sents = this.originList;
+                this.rawsentences.sents = this.originList.map(word=>word.split(" ").join(""));
                 console.log(this.rawsentences.sents)
                 this.lawsShowLoad = true;
-                this.axios.post(`http://localhost:8080/segment`, this.rawsentences, {
+                this.axios.post(`http://localhost:8090/segment`, this.rawsentences, {
                     headers: {_api_name: "fb_criminal", _api_version: "1.0.0", 'Access-Control-Allow-Origin': '*'}
                 }).then(res => {
                     console.log('-----------------01返回数据-------------------', res);

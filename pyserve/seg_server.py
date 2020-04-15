@@ -63,8 +63,8 @@ class SegResource:
         print("seg result:", segsents)
         resp.media = {'data':{"seg":segsents}}
 
-
-api = falcon.API(middleware=[cors_allow_all.middleware])
-api.req_options.auto_parse_form_urlencoded = True
-api.add_route('/segment', SegResource())
-waitress.serve(api, port=8080, url_scheme='http')
+if __name__=="__main__":
+    api = falcon.API(middleware=[cors_allow_all.middleware])
+    api.req_options.auto_parse_form_urlencoded = True
+    api.add_route('/segment', SegResource())
+    waitress.serve(api, port=8080, url_scheme='http')
