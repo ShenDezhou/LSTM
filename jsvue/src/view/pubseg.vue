@@ -32,7 +32,7 @@
               >
               </el-input>
             </el-col>
-            <el-col :span='3' >
+            <el-col :span='3'>
               <el-button style="float:left" type="primary" class="primary-btn-main" @click="getList">开始分词</el-button>
             </el-col>
           </el-row>
@@ -61,7 +61,8 @@
         <div class="center_wrap">
           <el-container>
             <el-aside width="210px">
-              <div class="nav_left_wrap onstopSearch_left_nav" :style="navBarFixed ? 'position: fixed;top: 150px;z-index: 666;' : ''"
+              <div class="nav_left_wrap onstopSearch_left_nav"
+                   :style="navBarFixed ? 'position: fixed;top: 150px;z-index: 666;' : ''"
                    @click="goToAim($event)">
                 <div data-v-21e53028 id="label_daohang">导航</div>
                 <!-- <div class="searchWhole">
@@ -80,7 +81,7 @@
                         </li>
                     </ul>
                 </div> -->
-                <el-timeline >
+                <el-timeline>
                   <el-timeline-item color="#4084f0" id="0">
                     全部
                   </el-timeline-item>
@@ -91,15 +92,15 @@
                     + navbarVal.legislation + navbarVal.eagn + navbarVal.iel + navbarVal.hkd
                     + navbarVal.aom + navbarVal.twd : 0}})
                   </el-timeline-item>
-<!--                  <el-timeline-item color="#4084f0" id="2">-->
-<!--                    司法案例-->
-<!--                    ({{navbarVal.pfnl ? navbarVal.pfnl + navbarVal.payz + exampleNavbar.gac-->
-<!--                    + navbarVal.bankruptcy + navbarVal.pal + navbarVal.atr : 0}})-->
-<!--                  </el-timeline-item>-->
-<!--                  <el-timeline-item color="#4084f0" id="3">-->
-<!--                    法学期刊-->
-<!--                    ({{navbarVal.qikan ? navbarVal.qikan : 0}})-->
-<!--                  </el-timeline-item>-->
+                  <!--                  <el-timeline-item color="#4084f0" id="2">-->
+                  <!--                    司法案例-->
+                  <!--                    ({{navbarVal.pfnl ? navbarVal.pfnl + navbarVal.payz + exampleNavbar.gac-->
+                  <!--                    + navbarVal.bankruptcy + navbarVal.pal + navbarVal.atr : 0}})-->
+                  <!--                  </el-timeline-item>-->
+                  <!--                  <el-timeline-item color="#4084f0" id="3">-->
+                  <!--                    法学期刊-->
+                  <!--                    ({{navbarVal.qikan ? navbarVal.qikan : 0}})-->
+                  <!--                  </el-timeline-item>-->
                 </el-timeline>
               </div>
             </el-aside>
@@ -113,51 +114,51 @@
                        element-loading-background="rgba(0, 0, 0, 0)">
                     <div id="textExample">中文分词:请输入以空格分隔的分词标准或者原始文本，模型将去掉空格后、进行分词、返回分词结果</div>
                     <div class="nerong_wrap">
-<!--                      <el-row class="tab_nav_wrap">-->
-<!--                        <el-menu-->
-<!--                          default-active="chl"-->
-<!--                          class="el-menu-vertical-demo"-->
-<!--                          background-color="#fff"-->
-<!--                          text-color="#666"-->
-<!--                          active-text-color="#065d9d"-->
-<!--                          mode="horizontal"-->
-<!--                          @select="selectIndex"-->
-<!--                        >-->
-<!--                          <el-menu-item index="chl">-->
-<!--                            <span slot="title">中央法规({{navbarVal.chl}})</span>-->
-<!--                          </el-menu-item>-->
-<!--                          <el-menu-item index="lar">-->
-<!--                            <span slot="title">地方法规({{navbarVal.lar}})</span>-->
-<!--                          </el-menu-item>-->
-<!--                          <el-submenu index="protocol">-->
-<!--                            <template slot="title">立法资料</template>-->
-<!--                            <el-menu-item index="protocol" style="color:#5c79b0;">草案({{navbarVal.protocol}})</el-menu-item>-->
-<!--                            <el-menu-item index="lawexplanation" style="color:#5c79b0;">法规解读({{navbarVal.lawexplanation}})</el-menu-item>-->
-<!--                            <el-menu-item index="whitebook" style="color:#5c79b0;">白皮书({{navbarVal.whitebook}})</el-menu-item>-->
-<!--                            <el-menu-item index="workreport" style="color:#5c79b0;">工作报告({{navbarVal.workreport}})</el-menu-item>-->
-<!--                          </el-submenu>-->
-<!--                          <el-menu-item index="legislation">-->
-<!--                            <span slot="title">立法计划({{navbarVal.legislation}})</span>-->
-<!--                          </el-menu-item>-->
-<!--                          <el-menu-item index="eagn">-->
-<!--                            <span slot="title">中外条约({{navbarVal.eagn}})</span>-->
-<!--                          </el-menu-item>-->
-<!--                          <el-menu-item index="iel">-->
-<!--                            <span slot="title">外国法规({{navbarVal.iel}})</span>-->
-<!--                          </el-menu-item>-->
-<!--                          <el-menu-item index="hkd">-->
-<!--                            <span slot="title">香港法规({{navbarVal.hkd}})</span>-->
-<!--                          </el-menu-item>-->
-<!--                          <el-menu-item index="aom">-->
-<!--                            <span slot="title">澳门法规({{navbarVal.aom}})</span>-->
-<!--                          </el-menu-item>-->
-<!--                          <el-menu-item index="twd">-->
-<!--                            <span slot="title">台湾法规({{navbarVal.twd}})</span>-->
-<!--                          </el-menu-item>-->
-<!--                        </el-menu>-->
-<!--                      </el-row>-->
+                      <!--                      <el-row class="tab_nav_wrap">-->
+                      <!--                        <el-menu-->
+                      <!--                          default-active="chl"-->
+                      <!--                          class="el-menu-vertical-demo"-->
+                      <!--                          background-color="#fff"-->
+                      <!--                          text-color="#666"-->
+                      <!--                          active-text-color="#065d9d"-->
+                      <!--                          mode="horizontal"-->
+                      <!--                          @select="selectIndex"-->
+                      <!--                        >-->
+                      <!--                          <el-menu-item index="chl">-->
+                      <!--                            <span slot="title">中央法规({{navbarVal.chl}})</span>-->
+                      <!--                          </el-menu-item>-->
+                      <!--                          <el-menu-item index="lar">-->
+                      <!--                            <span slot="title">地方法规({{navbarVal.lar}})</span>-->
+                      <!--                          </el-menu-item>-->
+                      <!--                          <el-submenu index="protocol">-->
+                      <!--                            <template slot="title">立法资料</template>-->
+                      <!--                            <el-menu-item index="protocol" style="color:#5c79b0;">草案({{navbarVal.protocol}})</el-menu-item>-->
+                      <!--                            <el-menu-item index="lawexplanation" style="color:#5c79b0;">法规解读({{navbarVal.lawexplanation}})</el-menu-item>-->
+                      <!--                            <el-menu-item index="whitebook" style="color:#5c79b0;">白皮书({{navbarVal.whitebook}})</el-menu-item>-->
+                      <!--                            <el-menu-item index="workreport" style="color:#5c79b0;">工作报告({{navbarVal.workreport}})</el-menu-item>-->
+                      <!--                          </el-submenu>-->
+                      <!--                          <el-menu-item index="legislation">-->
+                      <!--                            <span slot="title">立法计划({{navbarVal.legislation}})</span>-->
+                      <!--                          </el-menu-item>-->
+                      <!--                          <el-menu-item index="eagn">-->
+                      <!--                            <span slot="title">中外条约({{navbarVal.eagn}})</span>-->
+                      <!--                          </el-menu-item>-->
+                      <!--                          <el-menu-item index="iel">-->
+                      <!--                            <span slot="title">外国法规({{navbarVal.iel}})</span>-->
+                      <!--                          </el-menu-item>-->
+                      <!--                          <el-menu-item index="hkd">-->
+                      <!--                            <span slot="title">香港法规({{navbarVal.hkd}})</span>-->
+                      <!--                          </el-menu-item>-->
+                      <!--                          <el-menu-item index="aom">-->
+                      <!--                            <span slot="title">澳门法规({{navbarVal.aom}})</span>-->
+                      <!--                          </el-menu-item>-->
+                      <!--                          <el-menu-item index="twd">-->
+                      <!--                            <span slot="title">台湾法规({{navbarVal.twd}})</span>-->
+                      <!--                          </el-menu-item>-->
+                      <!--                        </el-menu>-->
+                      <!--                      </el-row>-->
                       <div class="list_wrap_main">
-                        <template  v-if="total_law == 0">
+                        <template v-if="total_law == 0">
                           <div class="no_data_wrap">
                             <img :src="no_data_logo" alt="未查询到相关数据">
                             <p class="one">未查询到相关数据</p>
@@ -171,20 +172,20 @@
                               {{originList[index]}}
                             </div>
                             <div class="contentCon">
-                               {{item}}
-<!--                              <template v-if="item.TimelinessDic">-->
-<!--                                <span v-html="item.TimelinessDic"></span> /-->
-<!--                              </template>-->
-<!--                              <template v-if="item.DocumentNO">-->
-<!--                                <span v-html="item.DocumentNO"></span> /-->
-<!--                              </template>-->
-<!--                              <template v-if="item.IssueDate">-->
-<!--                                <span v-html="item.IssueDate"></span>发布-->
-<!--                                <template v-if="item.ImplementDate"> / </template>-->
-<!--                              </template>-->
-<!--                              <template v-if="item.ImplementDate">-->
-<!--                                <span v-html="item.ImplementDate"></span>实施-->
-<!--                              </template>-->
+                              {{item}}
+                              <!--                              <template v-if="item.TimelinessDic">-->
+                              <!--                                <span v-html="item.TimelinessDic"></span> /-->
+                              <!--                              </template>-->
+                              <!--                              <template v-if="item.DocumentNO">-->
+                              <!--                                <span v-html="item.DocumentNO"></span> /-->
+                              <!--                              </template>-->
+                              <!--                              <template v-if="item.IssueDate">-->
+                              <!--                                <span v-html="item.IssueDate"></span>发布-->
+                              <!--                                <template v-if="item.ImplementDate"> / </template>-->
+                              <!--                              </template>-->
+                              <!--                              <template v-if="item.ImplementDate">-->
+                              <!--                                <span v-html="item.ImplementDate"></span>实施-->
+                              <!--                              </template>-->
                               <!-- <span v-if="item.DocumentNO && choseType_law != 'twd'">{{item.DocumentNO}} / </span>
                               <span v-if="item.DocumentNO && choseType_law == 'twd'">{{item.DocumentNO}} </span>
                               <span v-if="item.IssueDate">{{item.IssueDate}}发布 </span>
@@ -192,9 +193,9 @@
                             </div>
                           </div>
                         </template>
-                        <template  v-if="total_law > 0 && !lawsShow">
+                        <template v-if="total_law > 0 && !lawsShow">
                           <div class="clickMore">
-                            <el-button type="primary" plain @click="clickMoreMethod" >点击查看更多</el-button>
+                            <el-button type="primary" plain @click="clickMoreMethod">点击查看更多</el-button>
                           </div>
                         </template>
                         <template v-if="total_law > 0 && lawsShow">
@@ -226,25 +227,26 @@
 
 <script>
     import Publichead from "@/components/headerCommen";
-    import { getZYLawSelect } from "../select_api";
-    import { getAggs, getCases, addSearch,getJSON,getCollectList } from "../api";
+    import {getZYLawSelect} from "../select_api";
+    import {getAggs, getCases, addSearch, getJSON, getCollectList} from "../api";
+
     export default {
-        name: "dldemo",
+        name: "pubseg",
         components: {
             Publichead
         },
         data() {
             return {
-                navbarVal:{
-                    lawsTotal:0,
-                    exampleTotal:0,
-                    journalTotal:0
+                navbarVal: {
+                    lawsTotal: 0,
+                    exampleTotal: 0,
+                    journalTotal: 0
                 },
-                scroll:'',// 是否滚动
-                navBarFixed:false,
-                keyword:"", //搜索框
-                select:'1',//搜索范围选中
-                no_data_logo:'../static/img/no_data.png',
+                scroll: '',// 是否滚动
+                navBarFixed: false,
+                keyword: "", //搜索框
+                select: '1',//搜索范围选中
+                no_data_logo: '../static/img/no_data.png',
                 //是否模糊查询 2 模糊 1精确
                 radio_fuzzy: "1",
                 radio_type: "",
@@ -252,16 +254,16 @@
                     activeIndex: "",
                     logo_url: "../../static/img/logoo.png"
                 },
-                lawsList:[],
-                originList:[],
-                segsList:[],
-                exampleList:[],
-                journalList:[],
-                journalNavbar:{},
-                lawsNavbar:{},
-                exampleNavbar:{},
-                rawsentences:{
-                    sents:''
+                lawsList: [],
+                originList: [],
+                segsList: [],
+                exampleList: [],
+                journalList: [],
+                journalNavbar: {},
+                lawsNavbar: {},
+                exampleNavbar: {},
+                rawsentences: {
+                    sents: ''
                 },
                 lawsForm: {
                     scope: "default", //顶部搜索框作用域
@@ -272,8 +274,8 @@
                     keyword: "", //顶部检索框字段值
                     group: false, //是否分组查询(仅中央和地方)
                     title: "", //右下侧结果中检索字段值
-                    orderByIndex:0,
-                    groupByIndex:2,
+                    orderByIndex: 0,
+                    groupByIndex: 2,
                     filterList: [],
                     modules: [
                         1,
@@ -291,8 +293,8 @@
                     keyword: "", //顶部检索框字段值
                     group: false, //是否分组查询(仅中央和地方)
                     title: "", //右下侧结果中检索字段值
-                    orderByIndex:0,
-                    groupByIndex:2,
+                    orderByIndex: 0,
+                    groupByIndex: 2,
                     filterList: [],
                     modules: [
                         1,
@@ -310,8 +312,8 @@
                     keyword: "", //顶部检索框字段值
                     group: false, //是否分组查询(仅中央和地方)
                     title: "", //右下侧结果中检索字段值
-                    orderByIndex:0,
-                    groupByIndex:2,
+                    orderByIndex: 0,
+                    groupByIndex: 2,
                     filterList: [],
                     modules: [
                         1,
@@ -320,42 +322,42 @@
                     ],
                     tagJson: [],
                 },
-                choseType_law:'chl',
-                choseType_ex:'pfnl',
-                choseType_jou:'qikan',
-                total_law:-1,
-                total_exp:-1,
-                total_jou:-1,
-                lawsShow:true,//默认分页不显示
-                jouralShow:true,
-                exampleShow:true,
+                choseType_law: 'chl',
+                choseType_ex: 'pfnl',
+                choseType_jou: 'qikan',
+                total_law: -1,
+                total_exp: -1,
+                total_jou: -1,
+                lawsShow: true,//默认分页不显示
+                jouralShow: true,
+                exampleShow: true,
                 //加载
-                lawsShowLoad:false,
-                jouralShowLoad:true,
-                exampleShowLoad:true,
-                typeScope:'title',
+                lawsShowLoad: false,
+                jouralShowLoad: true,
+                exampleShowLoad: true,
+                typeScope: 'title',
                 //分库数量
-                total_eagn:0,
-                total_iel:0,
+                total_eagn: 0,
+                total_iel: 0,
                 total_hkd: 0,
                 total_aom: 0,
-                total_legislation:0,
+                total_legislation: 0,
                 total_twd: 0,
-                total_protocol:0,
-                total_lawexplanation:0,
-                total_whitebook:0,
-                total_workreport:0,
-                total_chl:0,
-                total_lar:0,
-                total_pfnl:0,
-                total_payz:0,
-                total_gac:0,
-                total_bankruptcy:0,
-                total_pal:0,
-                total_atr:0,
+                total_protocol: 0,
+                total_lawexplanation: 0,
+                total_whitebook: 0,
+                total_workreport: 0,
+                total_chl: 0,
+                total_lar: 0,
+                total_pfnl: 0,
+                total_payz: 0,
+                total_gac: 0,
+                total_bankruptcy: 0,
+                total_pal: 0,
+                total_atr: 0,
             }
         },
-        created: function() {
+        created: function () {
             document.title = this.$route.meta.title;
             this.keyword = this.$route.params.keyword;
 
@@ -363,16 +365,16 @@
             // 获取页面url
             var curUrl = window.location.href
             var curIndex = curUrl.lastIndexOf("?");
-            if(curIndex != -1){
+            if (curIndex != -1) {
                 // 获取问号后面参数
-                var targetData = curUrl.substring(curIndex + 1,curUrl.length)
+                var targetData = curUrl.substring(curIndex + 1, curUrl.length)
                 // 将问号后面参数转换成json
                 var objJson = {}
                 targetData.split("&").forEach((item) => {
                     objJson[item.split("=")[0]] = item.split("=")[1]
                 })
-                console.log('--------------搜索传参-----------------',objJson);
-                for(let curItem in objJson){
+                console.log('--------------搜索传参-----------------', objJson);
+                for (let curItem in objJson) {
                     // console.log(curItem)
                 }
                 let curKeyword_360 = decodeURIComponent(objJson.q) == undefined ? "" : decodeURIComponent(objJson.q);
@@ -413,15 +415,14 @@
             // this.searchMethod_exp(this.exampleForm);
             // this.searchMethod_jou(this.qikanForm);
         },
-        methods:{
+        methods: {
             //搜索范围更改
-            titleChange(val,trpe){
+            titleChange(val, trpe) {
 
-                if(val == "1" || val == 1) {
-                    this.keyword=''
-                }
-                else if(val=="training"){
-                    this.keyword='迈向  充满  希望  的  新  世纪  ——  一九九八年  新年  讲话  （  附  图片  １  张  ）  \n' +
+                if (val == "1" || val == 1) {
+                    this.keyword = ''
+                } else if (val == "training") {
+                    this.keyword = '迈向  充满  希望  的  新  世纪  ——  一九九八年  新年  讲话  （  附  图片  １  张  ）  \n' +
                         '中共中央  总书记  、  国家  主席  江  泽民  \n' +
                         '（  一九九七年  十二月  三十一日  ）  \n' +
                         '１２月  ３１日  ，  中共中央  总书记  、  国家  主席  江  泽民  发表  １９９８年  新年  讲话  《  迈向  充满  希望  的  新  世纪  》  。  （  新华社  记者  兰  红光  摄  ）  \n' +
@@ -521,9 +522,8 @@
                         '国家  旅游局  局长  何  光  、  江苏  省政府  领导  等  以及  数千  名  中外  宾朋  参加  了  这  一  隆重  而  特别  的  仪式  。  \n' +
                         '’９７  中国  旅游年  是  一  次  国家级  的  宣传  促销  活动  ，  是  我国  “  九五  ”  期间  旅游  发展  的  重大  举措  ，  １９９７年  元旦  由  国家  主席  江  泽民  在  新年  致词  中  宣布  开幕  。  \n' +
                         '据  最  新  统计  ，  １９９７年  １月  至  １１月份  ，  来华  旅游  人数  达  ５２３６万  多  人次  ，  国际  旅游  收入  达  １１０．８亿  多  美元  ，  分别  较  上年  同期  增长  １２．３％  和  １８．７％  ，  预计  全年  来华  旅游  入境  人数  约  ５４００万  人次  ，  旅游  创汇  达  １１５亿  美元  ，  再  创  新  纪录  ，  国内  旅游  人数  及  收入  也  比  上年  有  大幅  增长  。  '
-                }
-                else if(val=='test'){
-                    this.keyword='共同  创造  美好  的  新  世纪  ——  二○○一年  新年  贺词  \n' +
+                } else if (val == 'test') {
+                    this.keyword = '共同  创造  美好  的  新  世纪  ——  二○○一年  新年  贺词  \n' +
                         '（  二○○○年  十二月  三十一日  ）  （  附  图片  1  张  ）  \n' +
                         '女士  们  ，  先生  们  ，  同志  们  ，  朋友  们  ：  \n' +
                         '2001年  新年  钟声  即将  敲响  。  人类  社会  前进  的  航船  就要  驶入  21  世纪  的  新  航程  。  中国  人民  进入  了  向  现代化  建设  第三  步  战略  目标  迈进  的  新  征程  。  \n' +
@@ -644,7 +644,7 @@
                 // this.searchMethod_jou(this.qikanForm);
             },
             //搜索
-            getList(){
+            getList() {
                 // this.searchMethod();
                 // var url = this.$route.path;
                 // addSearch(this.keyword, url);
@@ -660,83 +660,83 @@
             handleSelect(queryData) {
                 // console.log(queryData, "----------------------------------------	-----");
             },
-            searchGetSegments(data){
+            searchGetSegments(data) {
                 //过滤空串
                 this.originList = data.split('\n').filter(word => word.trim().length > 0);
                 //构造字典
-                this.rawsentences.sents=this.originList.map(word=> word.split(' ').join(''));
+                this.rawsentences.sents = this.originList.map(word => word.split(' ').join(''));
                 console.log(this.rawsentences.sents)
-                this.lawsShowLoad=true;
+                this.lawsShowLoad = true;
                 this.axios.post(`http://localhost:8080/segment`, this.rawsentences, {
-                    headers: { _api_name: "fb_criminal", _api_version: "1.0.0" ,'Access-Control-Allow-Origin': '*'}
+                    headers: {_api_name: "fb_criminal", _api_version: "1.0.0", 'Access-Control-Allow-Origin': '*'}
                 }).then(res => {
-                    console.log('-----------------01返回数据-------------------',res);
-                    this.lawsShowLoad=false;
-                    if(res.data.data.seg.length > 0){
+                    console.log('-----------------01返回数据-------------------', res);
+                    this.lawsShowLoad = false;
+                    if (res.data.data.seg.length > 0) {
 
                         this.segsList = res.data;
                         this.total_law = 1;
-                    }else{
-                        this.total_law=0;
+                    } else {
+                        this.total_law = 0;
                     }
                 });
             },
-            searchMethod_law(data){
-                this.lawsShowLoad=true;
+            searchMethod_law(data) {
+                this.lawsShowLoad = true;
                 this.axios.post(`/json`, data, {
-                    headers: { _api_name: "fb_criminal", _api_version: "1.0.0" }
+                    headers: {_api_name: "fb_criminal", _api_version: "1.0.0"}
                 }).then(res => {
                     // console.log('-----------------01返回数据-------------------',res);
-                    this.lawsShowLoad=false;
-                    if(res.data.maincontent.length > 0){
-                        this.lawsList=res.data.maincontent[0];
-                        this.total_law=res.data.maincontent[0].total;
-                        if(res.data.maincontent[0].pathToResult){
-                            this.total_law=0;
+                    this.lawsShowLoad = false;
+                    if (res.data.maincontent.length > 0) {
+                        this.lawsList = res.data.maincontent[0];
+                        this.total_law = res.data.maincontent[0].total;
+                        if (res.data.maincontent[0].pathToResult) {
+                            this.total_law = 0;
                         }
-                    }else{
-                        this.total_law=0;
+                    } else {
+                        this.total_law = 0;
                     }
                     this.navbarVal = res.data.navbar;
                     this.lawsNavbar = res.data.navbar;
                 });
             },
-            searchMethod_exp(data){
-                this.exampleShowLoad=true;
+            searchMethod_exp(data) {
+                this.exampleShowLoad = true;
                 // console.log('-----------------02参数-------------------',data);
                 this.axios.post(`/json`, data, {
-                    headers: { _api_name: "fb_criminal", _api_version: "1.0.0" }
+                    headers: {_api_name: "fb_criminal", _api_version: "1.0.0"}
                 }).then(res => {
-                    console.log('-----------------02返回数据-------------------',res);
-                    this.exampleShowLoad=false;
-                    if(res.data.maincontent.length > 0){
-                        this.exampleList=res.data.maincontent[0];
-                        this.total_exp=res.data.maincontent[0].total;
-                        if(res.data.maincontent[0].pathToResult){
-                            this.total_exp=0;
+                    console.log('-----------------02返回数据-------------------', res);
+                    this.exampleShowLoad = false;
+                    if (res.data.maincontent.length > 0) {
+                        this.exampleList = res.data.maincontent[0];
+                        this.total_exp = res.data.maincontent[0].total;
+                        if (res.data.maincontent[0].pathToResult) {
+                            this.total_exp = 0;
                         }
-                    }else{
-                        this.total_exp=0;
+                    } else {
+                        this.total_exp = 0;
                     }
                     this.navbarVal = res.data.navbar;
                     this.exampleNavbar = res.data.navbar;
                 });
             },
-            searchMethod_jou(data){
-                this.jouralShowLoad=true;
+            searchMethod_jou(data) {
+                this.jouralShowLoad = true;
                 this.axios.post(`/json`, data, {
-                    headers: { _api_name: "fb_criminal", _api_version: "1.0.0" }
+                    headers: {_api_name: "fb_criminal", _api_version: "1.0.0"}
                 }).then(res => {
-                    console.log('-----------------03返回数据-------------------',res);
-                    this.jouralShowLoad=false;
-                    if(res.data.maincontent.length > 0){
-                        this.journalList=res.data.maincontent[0];
-                        this.total_jou=res.data.maincontent[0].total;
-                        if(res.data.maincontent[0].pathToResult){
-                            this.total_jou=0;
+                    console.log('-----------------03返回数据-------------------', res);
+                    this.jouralShowLoad = false;
+                    if (res.data.maincontent.length > 0) {
+                        this.journalList = res.data.maincontent[0];
+                        this.total_jou = res.data.maincontent[0].total;
+                        if (res.data.maincontent[0].pathToResult) {
+                            this.total_jou = 0;
                         }
-                    }else{
-                        this.total_jou=0;
+                    } else {
+                        this.total_jou = 0;
                     }
                     this.navbarVal = res.data.navbar;
                     this.journalNavbar = res.data.navbar;
@@ -744,106 +744,106 @@
                 });
             },
 
-            selectIndex(index){
-                this.choseType_law=index;
-                this.lawsForm.index=index;
-                this.lawsForm.page=1;
+            selectIndex(index) {
+                this.choseType_law = index;
+                this.lawsForm.index = index;
+                this.lawsForm.page = 1;
                 this.searchMethod_law(this.lawsForm);
             },
-            selectIndex_ex(index){
-                this.choseType_ex=index;
-                this.exampleForm.index=index;
-                this.exampleForm.page=1;
+            selectIndex_ex(index) {
+                this.choseType_ex = index;
+                this.exampleForm.index = index;
+                this.exampleForm.page = 1;
                 this.searchMethod_exp(this.exampleForm);
             },
-            selectIndex_jou(index){
+            selectIndex_jou(index) {
                 console.log(111111111111111111),
-                    this.choseType_jou=index;
-                this.qikanForm.index=index;
-                this.qikanForm.page=1;
+                    this.choseType_jou = index;
+                this.qikanForm.index = index;
+                this.qikanForm.page = 1;
                 this.searchMethod_jou(this.qikanForm);
             },
-            handleSizeChange(val){
+            handleSizeChange(val) {
                 //一页几条
-                this.lawsForm.size=val;
+                this.lawsForm.size = val;
                 this.searchMethod_law(this.lawsForm);
                 $(document).scrollTop($("#lawsNew_wrap_main").offset().top);
             },
-            handleCurrentChange(val){
+            handleCurrentChange(val) {
                 //页码更改
-                this.lawsForm.page=val;
+                this.lawsForm.page = val;
                 this.searchMethod_law(this.lawsForm);
                 $(document).scrollTop($("#lawsNew_wrap_main").offset().top);
             },
-            handleSizeChange_exp(val){
+            handleSizeChange_exp(val) {
                 //一页几条
-                this.exampleForm.size=val;
+                this.exampleForm.size = val;
                 this.searchMethod_exp(this.exampleForm);
                 $(document).scrollTop($("#example_wrap_main").offset().top);
             },
-            handleCurrentChange_exp(val){
+            handleCurrentChange_exp(val) {
                 //页码更改
-                this.exampleForm.page=val;
+                this.exampleForm.page = val;
                 this.searchMethod_exp(this.exampleForm);
                 $(document).scrollTop($("#example_wrap_main").offset().top);
             },
-            handleSizeChange_jou(val){
+            handleSizeChange_jou(val) {
                 //一页几条
-                this.qikanForm.size=val;
+                this.qikanForm.size = val;
                 this.searchMethod_jou(this.qikanForm);
                 $(document).scrollTop($("#journal_wrap_main").offset().top);
             },
-            handleCurrentChange_jou(val){
+            handleCurrentChange_jou(val) {
                 //页码更改
-                this.qikanForm.page=val;
+                this.qikanForm.page = val;
                 this.searchMethod_jou(this.qikanForm);
                 $(document).scrollTop($("#journal_wrap_main").offset().top);
             },
-            clickMoreMethod(){
+            clickMoreMethod() {
                 //点击查看更多
-                this.lawsShow=true;
+                this.lawsShow = true;
             },
-            clickMoreMethod_exp(){
-                this.exampleShow=true;
+            clickMoreMethod_exp() {
+                this.exampleShow = true;
             },
-            clickMoreMethod_jou(){
-                this.jouralShow=true;
+            clickMoreMethod_jou() {
+                this.jouralShow = true;
             },
-            menu(){
-                this.scroll=document.documentElement.scrollTop || document.body.scrollTop;
-                if(this.scroll > 230){
+            menu() {
+                this.scroll = document.documentElement.scrollTop || document.body.scrollTop;
+                if (this.scroll > 230) {
                     // console.log(this.scroll,'ddddddddddd')
-                    this.navBarFixed=true;
-                }else{
+                    this.navBarFixed = true;
+                } else {
                     // console.log(this.scroll,'juli')
-                    this.navBarFixed=false;
+                    this.navBarFixed = false;
                 }
                 // console.log(this.scroll,'距离变化')
                 let oneTop = $("#lawsNew_wrap_main").offset().top - 10;
                 let twoTop = $("#example_wrap_main").offset().top - 10;
                 let threeTop = $("#journal_wrap_main").offset().top - 10;
                 // console.log(oneTop,twoTop,threeTop)
-                if(this.scroll >= oneTop && this.scroll < twoTop){
+                if (this.scroll >= oneTop && this.scroll < twoTop) {
                     $("#1").addClass('active').siblings().removeClass('active');
-                }else if(this.scroll >= twoTop && this.scroll < threeTop){
+                } else if (this.scroll >= twoTop && this.scroll < threeTop) {
                     $("#2").addClass('active').siblings().removeClass('active');
-                }else if(this.scroll >= threeTop){
+                } else if (this.scroll >= threeTop) {
                     $("#3").addClass('active').siblings().removeClass('active');
-                }else{
+                } else {
                     $("#0").addClass('active').siblings().removeClass('active');
                 }
             },
-            goToAim(e){
-                if($(e.target).attr('class') == 'el-timeline-item__content'){
+            goToAim(e) {
+                if ($(e.target).attr('class') == 'el-timeline-item__content') {
                     let val = $(e.target).parents(".el-timeline-item").attr('id');
                     $(e.target).parents(".el-timeline-item").addClass('active').siblings().removeClass('active');
-                    if(val == '1'){
+                    if (val == '1') {
                         $(document).scrollTop($("#lawsNew_wrap_main").offset().top);
-                    }else if(val == '2'){
+                    } else if (val == '2') {
                         $(document).scrollTop($("#example_wrap_main").offset().top);
-                    }else if(val == '3'){
+                    } else if (val == '3') {
                         $(document).scrollTop($("#journal_wrap_main").offset().top);
-                    }else{
+                    } else {
                         $(document).scrollTop(0);
                     }
                 }
@@ -851,46 +851,51 @@
         },
         watch: {},
         mounted() {
-            window.addEventListener('scroll',this.menu);
+            window.addEventListener('scroll', this.menu);
         },
     };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style >
-  .onstopSearch_left_nav{
+<style>
+  .onstopSearch_left_nav {
     border: 1px solid #a9c4df;
     width: 208px;
   }
-  .nav_left_wrap.onstopSearch_left_nav .el-timeline-item.active .el-timeline-item__content{
+
+  .nav_left_wrap.onstopSearch_left_nav .el-timeline-item.active .el-timeline-item__content {
     color: #165ac6 !important;
   }
-  .nav_left_wrap.onstopSearch_left_nav .el-timeline-item__tail{
+
+  .nav_left_wrap.onstopSearch_left_nav .el-timeline-item__tail {
     position: absolute;
     left: 20px;
     height: 120%;
     border-left: 2px solid #4084f0;
   }
-  .nav_left_wrap.onstopSearch_left_nav .el-timeline-item__content{
+
+  .nav_left_wrap.onstopSearch_left_nav .el-timeline-item__content {
     text-align: left;
     padding-left: 10px;
     font-size: 16px;
     color: #2d405e;
     cursor: pointer;
   }
-  .nav_left_wrap.onstopSearch_left_nav .el-timeline-item__content:hover{
+
+  .nav_left_wrap.onstopSearch_left_nav .el-timeline-item__content:hover {
     color: #165ac6;
   }
-  .nav_left_wrap.onstopSearch_left_nav .el-timeline-item__node--normal{
+
+  .nav_left_wrap.onstopSearch_left_nav .el-timeline-item__node--normal {
     left: 15px;
     width: 12px;
     height: 12px;
     top: 2px;
   }
-  .nav_left_wrap.onstopSearch_left_nav .el-timeline{
+
+  .nav_left_wrap.onstopSearch_left_nav .el-timeline {
     margin: 20px 0;
   }
-
 
 
   #label_daohang {
@@ -906,30 +911,36 @@
     color: #2d405e;
   }
 
-  .onstopmain{
+  .onstopmain {
     padding: 0 !important;
     margin-left: 20px;
   }
-  .nerong_wrap{
+
+  .nerong_wrap {
     min-height: 200px;
   }
+
   .content_main_wrap .lawsNew_wrap,
   .content_main_wrap .example_wrap,
-  .content_main_wrap .journal_wrap{
+  .content_main_wrap .journal_wrap {
     border: 1px solid #a9c4df;
     box-sizing: border-box;
     margin-bottom: 20px;
   }
-  .clickMore{
+
+  .clickMore {
     margin: 20px 0 0 0;
   }
-  .clickMore button{
+
+  .clickMore button {
     width: 300px;
   }
-  .list_wrap_main{
+
+  .list_wrap_main {
     padding: 0 20px 20px 20px;
   }
-  .onestoptxt{
+
+  .onestoptxt {
     margin-right: 5px;
     display: inline-block;
     height: 100%;
@@ -938,7 +949,8 @@
     line-height: 40px;
     float: left;
   }
-  .fagui_bian_wrap_lin{
+
+  .fagui_bian_wrap_lin {
     display: inline-block;
     font-weight: 400;
     font-style: normal;
@@ -950,29 +962,36 @@
     cursor: pointer;
     margin-left: 15px;
   }
-  .fagui_bian_wrap_lin a{
+
+  .fagui_bian_wrap_lin a {
     font-size: 13px;
     color: #879bba;
   }
-  .fagui_bian_wrap_lin a:hover{
+
+  .fagui_bian_wrap_lin a:hover {
     color: #4da0fb;
   }
-  .no_data_wrap{
+
+  .no_data_wrap {
     padding: 50px;
     box-sizing: border-box;
   }
-  .no_data_wrap img{
+
+  .no_data_wrap img {
 
   }
-  .no_data_wrap .one{
+
+  .no_data_wrap .one {
 
   }
-  .no_data_wrap .two{
+
+  .no_data_wrap .two {
     color: #879bba;
     font-size: 13px;
   }
+
   /* 模态框 */
-  .el-dialog__header{
+  .el-dialog__header {
     padding: 0;
     height: 40px;
     background-color: #4084f0;
@@ -981,31 +1000,38 @@
     text-align: left;
     padding-left: 15px;
   }
-  .el-dialog__header span{
+
+  .el-dialog__header span {
     color: #ffffff;
     font-size: 16px;
   }
-  .el-dialog__header .el-dialog__headerbtn{
+
+  .el-dialog__header .el-dialog__headerbtn {
     top: 0;
     width: 40px;
     height: 40px;
     right: 0;
   }
-  .el-dialog__header .el-dialog__headerbtn:hover{
+
+  .el-dialog__header .el-dialog__headerbtn:hover {
     background-color: #f5b923;
     color: #ffffff;
   }
-  .el-dialog__headerbtn:hover .el-dialog__close{
+
+  .el-dialog__headerbtn:hover .el-dialog__close {
     color: #ffffff;
   }
-  .el-dialog{
+
+  .el-dialog {
     border-radius: 5px;
     overflow: hidden;
   }
-  .el-dialog__header .el-dialog__headerbtn i{
+
+  .el-dialog__header .el-dialog__headerbtn i {
     font-size: 14px;
     color: #c4dcf4;
   }
+
   /* 模态框 */
   .jians_conditions {
     color: #5c79b0;
@@ -1016,28 +1042,34 @@
     margin-top: 10px;
     overflow: hidden;
   }
+
   .center_el_main {
     padding: 0;
     margin-left: 10px;
     border: 1px solid #a9c4df;
   }
+
   .jians_conditions_wrap {
     min-height: 32px;
     border-bottom: 1px solid #a9c4df;
   }
+
   .conditions_left,
   .conditions_icon_clean,
   .conditions_right {
     float: left;
   }
+
   .conditions_left {
     width: 6%;
     text-align: left;
   }
+
   .conditions_right {
     width: 88%;
     text-align: left;
   }
+
   .conditions_right li {
     display: inline-block;
     color: #879bba;
@@ -1048,55 +1080,67 @@
     margin-right: 5px;
     margin-bottom: 8px;
   }
+
   .conditions_right li .error_item {
     margin-left: 5px;
     font-size: 14px;
     cursor: pointer;
   }
+
   .conditions_icon_clean {
     width: 5%;
     cursor: pointer;
     font-size: 13px;
     color: #409eff;
   }
+
   .center_wrap {
     padding: 10px;
   }
+
   ul {
     padding: 0;
     margin: 0;
     list-style: none;
   }
+
   .radio_main_wrap ul {
     text-align: left;
     padding-left: 120px;
     margin-bottom: 10px;
   }
+
   .radio_main_wrap ul li {
     display: inline-block;
   }
+
   .radio_qing_mo a {
     color: #879bba;
     font-size: 13px;
   }
+
   .radio_main_wrap ul li.fuzzy_wrap {
     height: 17px;
     border-right: 1px solid #cad0d7;
     margin: 0 15px;
   }
+
   .el-radio {
     color: #879bba !important;
     margin-right: 20px;
   }
+
   #onestopSearch .search_input_wrap {
     width: 89% !important;
   }
+
   #onestopSearch .search_select_wrap {
     width: 110px;
     background-color: #ffffff !important;
     /* border: 1px solid #a9c4df; */
     margin: 0;
   }
+
   #onestopSearch .el-input-group__prepend {
     padding: 0;
     border-radius: 0;
@@ -1105,20 +1149,24 @@
     overflow: hidden;
     /* border: 1px solid #a9c4df; */
   }
+
   #onestopSearch .search_select_wrap .el-input__inner {
     padding: 0 10px;
     text-align: center;
     height: 38px;
     /* border: none; */
   }
+
   .el-input__inner {
     /* border: 1px solid #a9c4df; */
     color: #879bba !important;
   }
+
   .el-select-dropdown__item {
     color: #879bba !important;
   }
-  .el-tree-node__content{
+
+  .el-tree-node__content {
     padding-right: 20px;
   }
 
@@ -1129,27 +1177,33 @@
     border-bottom: 1px solid #a9c4df;
     padding: 10px;
   }
+
   .total_wrap span {
     color: #409eff;
   }
+
   .search_inpu_one {
     margin: 20px 0;
   }
-  .el-menu--horizontal li.is-active{
-    color:#4084f0 !important;
+
+  .el-menu--horizontal li.is-active {
+    color: #4084f0 !important;
   }
+
   .el-menu-vertical-demo.el-menu--horizontal.el-menu li {
     height: 40px !important;
     line-height: 40px !important;
     color: #5c79b0 !important;
   }
-  .el-menu-vertical-demo.el-menu--horizontal.el-menu li .el-submenu__title,.el-menu-vertical-demo.el-menu--horizontal.el-menu li .el-submenu__title i{
+
+  .el-menu-vertical-demo.el-menu--horizontal.el-menu li .el-submenu__title, .el-menu-vertical-demo.el-menu--horizontal.el-menu li .el-submenu__title i {
     height: 40px;
     line-height: 43px;
     border-bottom: none !important;
     color: #5c79b0 !important;
     font-size: 16px;
   }
+
   .el-menu-vertical-demo.el-menu--horizontal.el-menu li.is-active {
     color: #165ac6 !important;
     border-bottom: 2px solid #165ac6 !important;
@@ -1161,6 +1215,7 @@
     margin-bottom: 20px;
     /* max-width: 1460px; */
   }
+
   #filerSelect {
     padding: 15px 10px;
     text-align: left;
@@ -1168,10 +1223,12 @@
     font-size: 14px;
     color: #879bba;
   }
+
   #filerSelect .el-select {
     padding-right: 18px;
     margin-bottom: 10px;
   }
+
   #textExample {
     border-top: 2px solid #a8bdce;
     background-color: #daedfb;
@@ -1185,22 +1242,28 @@
     line-height: 38px;
     color: #2d405e;
   }
+
   #lawsNew .el-select .el-input {
     width: 130px;
   }
+
   #lawsNew .input-with-select .el-input-group__prepend {
     background-color: #fff;
   }
+
   #lawsNew .row-bg {
     padding: 15px 0;
   }
+
   .tab_nav_wrap .el-menu--horizontal {
     padding: 0 10px;
     border-bottom: solid 1px #a9c4df;
   }
+
   #lawsNew .el-container {
     height: 100%;
   }
+
   #lawsNew .el-row .el-row {
     text-align: left;
     margin-left: 10px;
@@ -1213,6 +1276,7 @@
     width: 100%;
     height: 200px !important;
   }
+
   #lawsNew .el-header #lawsNewDiv {
     color: #333;
     text-align: left;
@@ -1223,6 +1287,7 @@
     box-sizing: border-box;
     margin-bottom: 10px;
   }
+
   #lawsNewDiv span {
     display: inline-block;
     padding: 10px 10px 0;
@@ -1240,15 +1305,15 @@
     background-color: #e3f1fa;
     color: #4f4f8a;
     text-align: left;
-    height: calc(100%-20px);
-    width: calc(100%-20px);
+    height: calc(100% - 20px);
+    width: calc(100% - 20px);
     margin: 10px;
   }
 
   #onestopSearch .el-main {
     color: #4f4f8a;
-    height: calc(100%-20px);
-    width: calc(100%-20px);
+    height: calc(100% - 20px);
+    width: calc(100% - 20px);
     margin: 10px 0;
     border: 1px solid #ccc;
   }
@@ -1257,24 +1322,30 @@
   .filerSelect_ul {
     overflow: hidden;
   }
+
   .filerSelect_ul li {
     float: left;
   }
+
   .filerSelect_ul li .el-select {
     margin-bottom: 0px !important;
     width: 120px;
   }
+
   .filerSelect_ul li .el-select .el-input__inner {
     height: 35px;
     line-height: 35px;
   }
+
   .filerSelect_ul li .el-select .el-input__icon {
     line-height: 35px;
   }
-  #dialog-two .el-form-item label{
+
+  #dialog-two .el-form-item label {
     width: 115px !important;
   }
-  #dialog-two .eagn_label label{
+
+  #dialog-two .eagn_label label {
     width: 80px !important;
   }
 </style>
@@ -1290,6 +1361,7 @@
     border-bottom: 1px solid #a9c4df;
     border-top: 1px solid #a9c4df;
   }
+
   .breadcrumb span {
     padding-left: 10px;
   }
@@ -1299,10 +1371,12 @@
     color: #879bba;
     padding-left: 10px;
   }
+
   .breadcrumb a:hover {
     cursor: pointer;
     color: #218fc4;
   }
+
   #lawsNew {
     width: 100%;
     min-height: 100%;
@@ -1310,12 +1384,14 @@
     background-color: #fff;
     box-sizing: border-box;
   }
+
   #lawsNewWrap {
     width: 100%;
     height: 100%;
     padding: 2%;
     box-sizing: border-box;
   }
+
   .advancedRetrieval {
     font-weight: 400;
     font-style: normal;
@@ -1326,53 +1402,63 @@
     display: inline-block;
     cursor: pointer;
   }
+
   .advancedRetrieval:hover {
     color: #4da0fb;
   }
+
   #advancedRetrieval {
     float: right;
     text-align: right;
     padding-right: 20px;
   }
-  .ckxq_wrap{
+
+  .ckxq_wrap {
     text-align: right;
     margin: 0;
     margin-bottom: 10px;
   }
-  .ckxq_wrap a{
+
+  .ckxq_wrap a {
     color: #82a6df !important;
   }
-  .ckxq_wrap a:hover{
+
+  .ckxq_wrap a:hover {
     color: #4f5e7b !important;
   }
 </style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-  .contentTitle_onestop a{
+  .contentTitle_onestop a {
     color: #4f5e7b;
   }
 
-  .contentCon{
-    color:#879bba;
+  .contentCon {
+    color: #879bba;
     font-size: 14px;
     margin: 10px 0;
   }
-  .contentConcrijournal{
-    color:#219CD4;
+
+  .contentConcrijournal {
+    color: #219CD4;
   }
-  .contentConcrijournal span{
-    color:#999;
+
+  .contentConcrijournal span {
+    color: #999;
   }
+
   .pagination_onestop {
     text-align: center;
     padding-top: 40px;
     margin-bottom: 20px;
     padding-left: 15px;
   }
+
   .red {
     color: red;
   }
+
   .content_mian_wrap_one {
     padding: 20px 60px 20px 30px;
     box-sizing: border-box;
@@ -1380,6 +1466,7 @@
     text-align: left;
     position: relative;
   }
+
   .circle {
     position: absolute;
     left: 15px;
@@ -1390,22 +1477,25 @@
     border: 1px solid #a7a7a7;
     border-radius: 50%;
   }
+
   .contentTitle_onestop {
     line-height: 30px;
   }
+
   .content_mian_wrap_one a {
     text-decoration: none;
     color: #4f5e7b;
     text-align: left;
     outline: none;
   }
-  .contentCon_display{
+
+  .contentCon_display {
     display: inline-block;
   }
 </style>
 <style scoped>
-  .textarea >>> .el-textarea__inner{
-    font-family:"Microsoft" !important;
-    font-size:20px !important;
+  .textarea >>> .el-textarea__inner {
+    font-family: "Microsoft" !important;
+    font-size: 20px !important;
   }
 </style>

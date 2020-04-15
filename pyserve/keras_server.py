@@ -53,13 +53,13 @@ class SegResource:
         resp.set_header("Cache-Control", "no-cache")
         data = req.stream.read(req.content_length)
         reqdata = json.loads(data, encoding='utf-8')
-        l.info('sentence:', reqdata['sents'])
+        print('sentence:', reqdata['sents'])
         sentences = reqdata['sents']
         sentences = [s.strip() for s in sentences if len(s.strip())>0]
         if not isinstance(sentences, list):
             sentences = [sentences]
         segsents = self.bilstm.cut(sentences)
-        l.info("seg result:", segsents)
+        print("seg result:", segsents)
         resp.media = {'data':{"seg":segsents}}
 
 
