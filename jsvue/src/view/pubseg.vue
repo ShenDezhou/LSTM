@@ -12,14 +12,23 @@
         <div class="header_search_wrap">
           <el-row class="search_inpu_one">
             <el-col :span="1" id="modelname" class="onestopSearch" style="margin-left: 10px;">
-              <span class="onestoptxt">中文分词</span>
+              <span class="onestoptxt">中文分词模型</span>
+            </el-col>
+            <el-col :span="1" id="model" class="onestopSearch" style="margin-left: 10px;">
+              <el-select v-model="model" class="search_select_wrap" @change="(item)=>modelChange(item,'select')">
+                <el-option label="默认pubseg模型" value="pubseg"></el-option>
+                <el-option label="裁判文书CRF模型" value="crf"></el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="1" id="corpusname" class="onestopSearch" style="margin-left: 10px;">
+              <span class="onestoptxt">常见语料</span>
             </el-col>
             <el-col :span="1" id="dropbox" class="onestopSearch" style="margin-left: 10px;">
               <el-select v-model="select" class="search_select_wrap" @change="(item)=>titleChange(item,'select')">
                 <el-option label="默认" value="1"></el-option>
                 <el-option label="ICWS2005训练集" value="training"></el-option>
                 <el-option label="ICWS2005测试集" value="test"></el-option>
-                <el-option label="裁判文书100合同" value="case-contract"></el-option>
+                <el-option label="裁判文书100合同集" value="case-contract"></el-option>
                 <!-- <el-option label="文号" value="documentno"></el-option> -->
               </el-select>
             </el-col>
@@ -37,7 +46,7 @@
               >
               </el-input>
             </el-col>
-            <el-col :span='3'>
+            <el-col :span='1'>
               <el-button style="float:left" type="primary" class="primary-btn-main" @click="getList">开始分词</el-button>
             </el-col>
           </el-row>
@@ -249,6 +258,7 @@
                 },
                 scroll: '',// 是否滚动
                 navBarFixed: false,
+                model:"pubseg",//分词模型
                 keyword: "", //搜索框
                 select: '1',//搜索范围选中
                 no_data_logo: '../static/img/no_data.png',
@@ -268,7 +278,8 @@
                 lawsNavbar: {},
                 exampleNavbar: {},
                 rawsentences: {
-                    sents: ''
+                    sents: '',
+                    model: ''
                 },
                 lawsForm: {
                     scope: "default", //顶部搜索框作用域
@@ -421,6 +432,9 @@
             // this.searchMethod_jou(this.qikanForm);
         },
         methods: {
+            modelChange(val, type){
+                this.model = val
+            },
             //搜索范围更改
             titleChange(val, trpe) {
 
@@ -783,6 +797,7 @@
                 this.originList = preprocess.filter(word => word.trim().length > 0 &&  word.trim()!="。");
                 //构造字典
                 this.rawsentences.sents = this.originList.map(word=>word.split(" ").join(""));
+                this.rawsentences.model = this.model;
                 this.lawsShowLoad = true;
                 this.axios.post(`http://localhost:8090/segment`, this.rawsentences, {
                     headers: {_api_name: "fb_criminal", _api_version: "1.0.0", 'Access-Control-Allow-Origin': '*'}
