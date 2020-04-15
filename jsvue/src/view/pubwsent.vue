@@ -25,7 +25,7 @@
             </el-col>
             <el-col :span="18" id="onestopSearch" class="onestopSearch">
               <el-input
-                :placeholder="select == '1'? '请输入待分词内容':'请输入待分词内容'"
+                :placeholder="select == '1'? '请输入待分析内容':'请输入待分析内容'"
                 clearable
                 v-model="keyword"
                 class="input-with-select search_input_wrap"
@@ -767,8 +767,18 @@
                 // console.log(queryData, "----------------------------------------	-----");
             },
             searchGetSegments(data) {
+                var rawdata = data.split('\n');
+                var preprocess = [];
+                for (var word  of  rawdata){
+                    if(word.split(" ").join("").trim().length>976){
+                        var segs = word.split("。").map(x=>x+"。")
+                        preprocess.concat(segs);
+                    }else{
+                        preprocess.push(word);
+                    }
+                }
                 //过滤空串
-                this.originList = data.split('\n').filter(word => word.trim().length > 0);
+                this.originList = preprocess.filter(word => word.trim().length > 0 &&word.trim()!="。");
                 //构造字典
                 this.rawsentences.sents = this.originList.map(word => word.split(' ').join(''));
                 console.log(this.rawsentences.sents)
