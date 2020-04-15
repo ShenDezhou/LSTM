@@ -9,7 +9,7 @@ export default new Router({
       meta:{title:'法律信息综合检索平台'},
       component: ()=>import('@/view/index'),
       beforeEnter: (to, from, next) => {
-        next({ path: '/pubseg' })
+        next({ path: '/pubwsent' })
       }
       // beforeEnter: (to, from, next) => {
       //   console.log("--1031--"+JSON.stringify(to));
@@ -28,6 +28,12 @@ export default new Router({
       name: 'pubseg',
       meta:{title:'中文分词示例'},
       component: ()=>import('@/view/pubseg')
+    },
+    {
+      path: '/pubwsent',//一站式
+      name: 'pubwsent',
+      meta:{title:'情感分类示例'},
+      component: ()=>import('@/view/pubwsent')
     },
 		{
 		  path: '/oneStopSearch',//一站式

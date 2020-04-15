@@ -12,11 +12,16 @@
 			mode="horizontal"
 			@select="handleSelect"
 			id="fb_el_menu">
-				<el-menu-item index="onestop">
+				<el-menu-item index="pubseg">
 					<a :href="pubseg">
 						<span slot="title">pubseg中文分词</span>
 					</a>
 				</el-menu-item>
+        <el-menu-item index="pubwsent">
+          <a :href="pubwsent">
+            <span slot="title">pubwsent情感分类</span>
+          </a>
+        </el-menu-item>
 				<el-menu-item index="lawsNew">
 					<a :href="lawsNew">
 						<span slot="title">法律法规</span>
@@ -42,6 +47,8 @@
 		name: "headercommon",
 		data() {
 			return {
+        pubseg:'#/pubseg',
+        pubwsent:'#/pubwsent',
 				onestopUrl:'#/oneStopSearch',
 				journalLaw:'#/journalLaw',
 				example:'#/example',

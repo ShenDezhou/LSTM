@@ -11,14 +11,18 @@
       <div class="content_main">
         <div class="header_search_wrap">
           <el-row class="search_inpu_one">
-            <el-col :span="20" id="onestopSearch" class="onestopSearch" style="margin-left: 10px;">
+            <el-col :span="1" id="modelname" class="onestopSearch" style="margin-left: 10px;">
               <span class="onestoptxt">中文分词</span>
+            </el-col>
+            <el-col :span="1" id="dropbox" class="onestopSearch" style="margin-left: 10px;">
               <el-select v-model="select" class="search_select_wrap" @change="(item)=>titleChange(item,'select')">
                 <el-option label="默认" value="1"></el-option>
                 <el-option label="ICWS2005训练集" value="training"></el-option>
                 <el-option label="ICWS2005测试集" value="test"></el-option>
                 <!-- <el-option label="文号" value="documentno"></el-option> -->
               </el-select>
+            </el-col>
+            <el-col :span="18" id="onestopSearch" class="onestopSearch">
               <el-input
                 :placeholder="select == '1'? '请输入待分词内容':'请输入待分词内容'"
                 clearable
@@ -664,7 +668,7 @@
                 //过滤空串
                 this.originList = data.split('\n').filter(word => word.trim().length > 0);
                 //构造字典
-                this.rawsentences.sents = this.originList.map(word => word.split(' ').join(''));
+                this.rawsentences.sents = this.originList;
                 console.log(this.rawsentences.sents)
                 this.lawsShowLoad = true;
                 this.axios.post(`http://localhost:8080/segment`, this.rawsentences, {
