@@ -5,6 +5,7 @@ import json
 import waitress
 from PUB_BiLSTM_BN import PUB_BiLSTM_BN
 
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)-18s %(message)s')
 l = logging.getLogger()
 cors_allow_all = CORS(allow_all_origins=True,

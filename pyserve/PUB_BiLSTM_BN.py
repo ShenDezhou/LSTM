@@ -1,5 +1,4 @@
 import logging
-
 from keras.models import model_from_json
 import codecs
 import numpy
