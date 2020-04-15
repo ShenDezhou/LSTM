@@ -3,5 +3,5 @@ scikit-learn
 elasticsearch==6
 tensorflow==1.15.2
 Keras==2.2.4
-falcon
-waitress
+falcon==2.0.0
+waitress==1.4.3

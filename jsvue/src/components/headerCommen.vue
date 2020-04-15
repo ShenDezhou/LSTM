@@ -1,4 +1,4 @@
-<!-- 顶部导航栏 --> 
+<!-- 顶部导航栏 -->
 <template>
 	<el-row class="header-row">
 		<el-col :span="3" id="stages_logo">
@@ -12,11 +12,11 @@
 			mode="horizontal"
 			@select="handleSelect"
 			id="fb_el_menu">
-				<!-- <el-menu-item index="onestop">
-					<a :href="onestopUrl" target="_self">
-						<span slot="title">一站式检索</span>
+				<el-menu-item index="onestop">
+					<a :href="pubseg">
+						<span slot="title">pubseg中文分词</span>
 					</a>
-				</el-menu-item> -->
+				</el-menu-item>
 				<el-menu-item index="lawsNew">
 					<a :href="lawsNew">
 						<span slot="title">法律法规</span>
