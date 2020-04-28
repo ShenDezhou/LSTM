@@ -799,7 +799,7 @@
                 this.rawsentences.sents = this.originList.map(word=>word.split(" ").join(""));
                 this.rawsentences.model = this.model;
                 this.lawsShowLoad = true;
-                this.axios.post(`http://localhost:8090/segment`, this.rawsentences, {
+                this.axios.post(`http://192.168.4.250:8090/segment`, this.rawsentences, {
                     headers: {_api_name: "fb_criminal", _api_version: "1.0.0", 'Access-Control-Allow-Origin': '*'}
                 }).then(res => {
                     console.log('-----------------01返回数据-------------------', res);
