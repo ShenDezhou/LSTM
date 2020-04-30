@@ -14,7 +14,7 @@
     "axios": "^0.18.0",
     "echarts": "^4.2.1",
     "element-ui": "^2.8.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jquery-form": "^4.2.2",
     "js-base64": "^2.5.1",
     "less": "^3.10.3",
